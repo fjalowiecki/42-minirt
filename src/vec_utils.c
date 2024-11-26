@@ -28,3 +28,4 @@ t_vec3 vec_mul(t_vec3 v, float scalar) {
     result.z = v.z * scalar;
     return result;
 }
+

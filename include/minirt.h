@@ -10,8 +10,8 @@
 # include "vec_utils.h"
 # include "../mlx/mlx.h"
 
-# define IMAGE_HEIGHT 1024
-# define IMAGE_WIDTH 768
+# define IMAGE_HEIGHT 1024.0
+# define IMAGE_WIDTH 768.0
 # define WINDOW_TITLE "miniRT"
 
 /*KEYCODES*/

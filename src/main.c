@@ -29,9 +29,26 @@ bool hit_sphere(t_point3 center, float radius, t_ray r) {
 void create_image(t_data *img, t_sphere sph)
 {
 	t_ray ray;
-	ray.orig.x = 0;
-	ray.orig.y = 0;
-	ray.orig.z = 0;
+
+	
+	t_point3 focal_length = {0, 0, 1.0};
+    float viewport_height = 2.0;
+    float viewport_width = viewport_height * (IMAGE_WIDTH / IMAGE_HEIGHT);
+    t_point3 camera_center = {0, 0, 0};
+	ray.orig = camera_center;
+
+    // Calculate the vectors across the horizontal and down the vertical viewport edges.
+    t_vec3 viewport_u = {viewport_width, 0, 0};
+    t_vec3 viewport_v = {0, -viewport_height, 0};
+
+    // Calculate the horizontal and vertical delta vectors from pixel to pixel.
+    t_vec3 pixel_delta_u = vec_mul(viewport_u, 1.0 / IMAGE_WIDTH);
+    t_vec3 pixel_delta_v = vec_mul(viewport_v, 1.0 / IMAGE_HEIGHT);
+
+    // Calculate the location of the upper left pixel.
+    t_vec3 viewport_upper_left = vec_sub(vec_sub(vec_sub(camera_center, focal_length),
+		vec_mul(viewport_u, 0.5)),vec_mul(viewport_v, 0.5));
+    t_vec3 pixel00_loc = vec_add(viewport_upper_left, vec_mul(vec_add(pixel_delta_u, pixel_delta_v), 0.5));
 
     int x = 0;
     while (x < IMAGE_HEIGHT)
@@ -39,10 +56,9 @@ void create_image(t_data *img, t_sphere sph)
         int y = 0;
         while (y < IMAGE_WIDTH)
         {
-            ray.dir.x = (float)x / (IMAGE_HEIGHT - 1);
-            ray.dir.y = (float)y / (IMAGE_WIDTH - 1);
-            ray.dir.z = -1.0;
-
+			t_point3 pixel_center = vec_add(pixel00_loc, vec_add(vec_mul(pixel_delta_u, y),vec_mul(pixel_delta_v, x)));
+        	t_vec3 ray_direction = vec_sub(pixel_center, camera_center);
+            ray.dir = ray_direction;
             if (hit_sphere(sph.center, sph.radius, ray))
                 my_mlx_pixel_put(img, x, y, 0x00FF0000);
             else
@@ -59,10 +75,10 @@ int main()
 	t_window window;
 	t_data img;
 	t_sphere sph1;
-	sph1.center.x = 100;
-	sph1.center.y = 100;
-	sph1.center.z = -200;
-	sph1.radius = 10;
+	sph1.center.x = 0;
+	sph1.center.y = 0;
+	sph1.center.z = -100;
+	sph1.radius = 50;
 
 	window.mlx_ptr = NULL;
 	window.win_ptr = NULL;
@@ -72,7 +88,7 @@ int main()
 
 	mlx_hook(window.win_ptr, DestroyNotify, StructureNotifyMask, on_destroy, &window);
 	mlx_hook(window.win_ptr, 2, (1L << 0), close_esc, &window);//todo: unification of arguments
-	img.img = mlx_new_image(window.mlx_ptr, 1920, 1080);
+	img.img = mlx_new_image(window.mlx_ptr, 1024, 768);
 	img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel, &img.line_length, &img.endian);
 
 	
