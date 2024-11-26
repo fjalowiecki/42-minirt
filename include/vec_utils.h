@@ -19,7 +19,7 @@ float dot_product(t_vec3 a, t_vec3 b);
 t_vec3 vec_add(t_vec3 a, t_vec3 b);
 t_vec3 vec_sub(t_vec3 a, t_vec3 b);
 t_vec3 vec_mul(t_vec3 v, float scalar);
-t_vec3 vec_intersection(t_point3 c, t_vec3 p, float skalar);
+t_point3 point_intersection(t_point3 c, t_vec3 p, float skalar);
 float vec_length(t_vec3 v);
 t_vec3 unit_vector(t_vec3 vector);
 

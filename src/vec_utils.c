@@ -29,9 +29,9 @@ t_vec3 vec_mul(t_vec3 v, float scalar) {
 	return result;
 }
 
-t_vec3 vec_intersection(t_point3 c, t_vec3 p, float skalar)
+t_point3 point_intersection(t_point3 c, t_vec3 p, float skalar)
 {
-	t_vec3 result;//todo: zmaian
+	t_point3 result;//todo: zmaian
 	result.x = c.x + (p.x * skalar);
 	result.y = c.y + (p.y * skalar);
 	result.z = c.z + (p.z * skalar);

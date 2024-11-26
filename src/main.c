@@ -35,6 +35,7 @@ void create_image(t_data *img, t_sphere sph)
 	t_ray ray;
 	float t;
 	
+	t_point3 light = ray.orig;//{200, 0 , -10};
 	t_point3 focal_length = {0, 0, 1.0};
     float viewport_height = 2.0;
     float viewport_width = viewport_height * (IMAGE_WIDTH / IMAGE_HEIGHT);
@@ -66,8 +67,12 @@ void create_image(t_data *img, t_sphere sph)
             t = hit_sphere(sph.center, sph.radius, ray);
 			if(t > 0)
 			{
-                my_mlx_pixel_put(img, x, y, 0x00FF0000);
-				t_vec3 N = unit_vector(vec_intersection(camera_center, ray_direction, t));
+				t_point3 intersection = point_intersection(camera_center, ray_direction, t);
+				t_vec3 N = unit_vector(vec_sub(intersection, sph.center));
+				t_vec3 intersec_light = unit_vector(vec_sub(light, intersection));
+				float angle = cos(dot_product(N, intersec_light));
+				// printf("%f\n", angle);
+                my_mlx_pixel_put(img, x, y, 0x00FF0000 * angle);
 			}
 			else
                 my_mlx_pixel_put(img, x, y, 0xADD8E6);
