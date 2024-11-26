@@ -1,6 +1,0 @@
-*.vscode
-obj
-*.o
-mlx
-.gitignore
-minirt

@@ -17,19 +17,23 @@ void	my_mlx_pixel_put(t_data *data, int x, int y, int color)
 	*(unsigned int*)dst = color;
 }
 
-bool hit_sphere(t_point3 center, float radius, t_ray r) {
+float hit_sphere(t_point3 center, float radius, t_ray r) {
     t_vec3 oc = vec_sub(r.orig, center);
     float a = dot_product(r.dir, r.dir);
     float b = 2.0 * dot_product(r.dir, oc);
     float c = dot_product(oc, oc) - radius * radius;
     float discriminant = b * b - 4 * a * c;
-    return (discriminant >= 0);
+
+	if (discriminant < 0)
+		return (-1.0);
+	else
+    	return ((-b - sqrt(discriminant)) / (2.0 * a));
 }
 
 void create_image(t_data *img, t_sphere sph)
 {
 	t_ray ray;
-
+	float t;
 	
 	t_point3 focal_length = {0, 0, 1.0};
     float viewport_height = 2.0;
@@ -59,9 +63,13 @@ void create_image(t_data *img, t_sphere sph)
 			t_point3 pixel_center = vec_add(pixel00_loc, vec_add(vec_mul(pixel_delta_u, y),vec_mul(pixel_delta_v, x)));
         	t_vec3 ray_direction = vec_sub(pixel_center, camera_center);
             ray.dir = ray_direction;
-            if (hit_sphere(sph.center, sph.radius, ray))
+            t = hit_sphere(sph.center, sph.radius, ray);
+			if(t > 0)
+			{
                 my_mlx_pixel_put(img, x, y, 0x00FF0000);
-            else
+				t_vec3 N = unit_vector(vec_intersection(camera_center, ray_direction, t));
+			}
+			else
                 my_mlx_pixel_put(img, x, y, 0xADD8E6);
 
             y++;
