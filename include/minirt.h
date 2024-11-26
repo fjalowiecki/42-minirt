@@ -14,6 +14,10 @@
 # define IMAGE_WIDTH 768
 # define WINDOW_TITLE "miniRT"
 
+/*KEYCODES*/
+
+# define ESC 65307
+
 typedef struct t_window
 {
 	void	*mlx_ptr;
@@ -30,6 +34,11 @@ typedef struct	s_data {
 
 typedef struct s_sphere {
 	t_point3 center;
-	float radius;
+	double radius;
 } t_sphere;
+
+/*FUCTIONS*/
+
+int	close_esc(int keycode, t_window *window);
+
 #endif

@@ -9,7 +9,7 @@ CC		= gcc
 
 #CFLAGS	= -Wall -Wextra -Werror -I include/
 CFLAGS	= -I include/
-LDFLAGS = -Lmlx -lmlx -L/usr/lib/X11 -lXext -lX11
+LDFLAGS = -Lmlx -lmlx -L/usr/lib/X11 -lXext -lX11 -lm
 
 $(OBJS_DIR)/%.o: src/%.c
 	@echo "Compiling $<..."
