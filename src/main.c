@@ -30,12 +30,25 @@ float hit_sphere(t_point3 center, float radius, t_ray r) {
     	return ((-b - sqrt(discriminant)) / (2.0 * a));
 }
 
+unsigned int rgb_to_hex(int r, int g, int b) {
+    // Upewnij się, że wartości RGB są w zakresie 0-255
+    if (r < 0) r = 0;
+    if (r > 255) r = 255;
+    if (g < 0) g = 0;
+    if (g > 255) g = 255;
+    if (b < 0) b = 0;
+    if (b > 255) b = 255;
+
+    // Konwertuj wartości RGB na zapis szesnastkowy
+    return (r << 16) | (g << 8) | b;
+}
+
 void create_image(t_data *img, t_sphere sph)
 {
 	t_ray ray;
 	float t;
 	
-	t_point3 light = ray.orig;//{200, 0 , -10};
+	t_point3 light = {0, 50 , -100};
 	t_point3 focal_length = {0, 0, 1.0};
     float viewport_height = 2.0;
     float viewport_width = viewport_height * (IMAGE_WIDTH / IMAGE_HEIGHT);
@@ -70,9 +83,14 @@ void create_image(t_data *img, t_sphere sph)
 				t_point3 intersection = point_intersection(camera_center, ray_direction, t);
 				t_vec3 N = unit_vector(vec_sub(intersection, sph.center));
 				t_vec3 intersec_light = unit_vector(vec_sub(light, intersection));
-				float angle = cos(dot_product(N, intersec_light));
+				float angle = dot_product(N, intersec_light);
+				// float pos_angle = (angle > 0.0) ? angle : 0.0;
 				// printf("%f\n", angle);
-                my_mlx_pixel_put(img, x, y, 0x00FF0000 * angle);
+				int brightness = 1;
+				int r = 100 * -angle * brightness;
+				int g = 255 * -angle * brightness;
+				int b = 0 * -angle * brightness;
+                my_mlx_pixel_put(img, x, y, rgb_to_hex(r, g, b));
 			}
 			else
                 my_mlx_pixel_put(img, x, y, 0xADD8E6);
