@@ -60,8 +60,18 @@ typedef struct s_sphere {
 	t_color color;
 } t_sphere;
 
+
+
+typedef struct
+{
+	t_vec3 N;
+	t_point3 center;
+	t_color rgb_color;
+} t_plane;
+
 /*FUNCTIONS*/
 
 int	close_esc(int keycode, t_window *window);
+float hit_plane(t_ray ray, t_plane *plane);
 
 #endif
