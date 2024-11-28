@@ -24,20 +24,43 @@ typedef struct t_window
 	void	*win_ptr;
 } t_window;
 
-typedef struct	s_data {
+typedef struct {
 	void	*img;
 	char	*addr;
 	int		bits_per_pixel;
 	int		line_length;
 	int		endian;
-} t_data;
+} t_img;
+
+typedef struct {
+	int r;
+	int g;
+	int b;
+} t_color;
+
+typedef struct {
+//todo: here go camera parameters from file. To add orientation vector and FOV in degrees
+	t_point3 camera_center;
+	t_point3 focal_length;
+	float image_width;
+	float image_height;
+	float viewport_height;
+	float viewport_width;
+} t_view;
+
+typedef struct {
+//todo: here go light parameters from file
+	t_point3 origin;
+	float brightness;
+} t_light;
 
 typedef struct s_sphere {
 	t_point3 center;
 	double radius;
+	t_color color;
 } t_sphere;
 
-/*FUCTIONS*/
+/*FUNCTIONS*/
 
 int	close_esc(int keycode, t_window *window);
 
