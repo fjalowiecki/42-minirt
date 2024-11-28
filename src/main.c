@@ -66,7 +66,6 @@ float calc_light_angle(float t, t_vec3 ray_direction, t_view *view, t_light *lig
 	t_vec3 intersec_light = unit_vector(vec_sub(light->origin, intersection));
 	float angle = dot_product(N, intersec_light);
 	float pos_angle = (angle > 0.0) ? angle : 0.0;
-	//int brightness = 1;
 
 	return (pos_angle);
 }
@@ -76,7 +75,6 @@ float calc_light_angle_plane(float t, t_vec3 ray_direction, t_view *view, t_ligh
 	t_vec3 intersec_light = unit_vector(vec_sub(light->origin, intersection));
 	float angle = dot_product(sph->N, intersec_light);
 	float pos_angle = (angle > 0.0) ? angle : 0.0;
-	//int brightness = 1;
 
 	return (pos_angle);
 }
@@ -84,8 +82,8 @@ float calc_light_angle_plane(float t, t_vec3 ray_direction, t_view *view, t_ligh
 void create_image(t_img *img, t_view *view, t_light *light, t_sphere *sph1, t_sphere *sph2, t_plane *plane)
 {
 	t_ray ray;
-	float red;
-	float green;
+	float t1;
+	float t2;
 	float t3;
 
 	t_vec3 pixel_delta_u;
@@ -101,43 +99,42 @@ void create_image(t_img *img, t_view *view, t_light *light, t_sphere *sph1, t_sp
         while (y < IMAGE_HEIGHT)
         {
 			t_point3 pixel_center = vec_add(pixel00_loc, vec_add(vec_mul(pixel_delta_u, x),vec_mul(pixel_delta_v, y)));
-        	t_vec3 ray_direction = unit_vector(vec_sub(pixel_center, view->camera_center));
-            ray.dir = ray_direction;
-            red = hit_sphere(sph1->center, sph1->radius, ray);
-            green = hit_sphere(sph2->center, sph2->radius, ray);
+			ray.dir  = unit_vector(vec_sub(pixel_center, view->camera_center));
+            t1 = hit_sphere(sph1->center, sph1->radius, ray);
+            t2 = hit_sphere(sph2->center, sph2->radius, ray);
 			t3 = hit_plane(ray, plane);
-			// tylko red
-			// green - brak intersekcji = -1
-			// red = intersekcja = 2
-			// t ujemne gdy nie ma intersekcji lub gdy jest za nami
-			// red = 5
-			// green = -1 
-			if(red < green && red > 0) //|| (red > 0 && green < 0))
-			{
-				float angle = calc_light_angle(red, ray_direction, view, light, sph1);
-				int r = sph1->color.r * angle * light->brightness;
-				int g = sph1->color.g * angle * light->brightness;
-				int b = sph1->color.b * angle * light->brightness;
-				my_mlx_pixel_put(img, x, y, rgb_to_hex(r, g, b));
+			float closest_t = -1;
+			int r = 0, g = 0, b = 0;
+
+			if (t1 > 0 && (closest_t < 0 || t1 < closest_t)) {
+				closest_t = t1;
+				float angle = calc_light_angle(t1, ray.dir, view, light, sph1);
+				r = sph1->color.r * angle * light->brightness;
+				g = sph1->color.g * angle * light->brightness;
+				b = sph1->color.b * angle * light->brightness;
 			}
-			else if (green < red)
-			{
-				float angle = calc_light_angle(green, ray_direction, view, light, sph2);
-				int r = sph2->color.r * angle * light->brightness;
-				int g = sph2->color.g * angle * light->brightness;
-				int b = sph2->color.b * angle * light->brightness;
-				my_mlx_pixel_put(img, x, y, rgb_to_hex(r, g, b));
+
+			if (t2 > 0 && (closest_t < 0 || t2 < closest_t)) {
+				closest_t = t2;
+				float angle = calc_light_angle(t2, ray.dir, view, light, sph2);
+				r = sph2->color.r * angle * light->brightness;
+				g = sph2->color.g * angle * light->brightness;
+				b = sph2->color.b * angle * light->brightness;
 			}
-			// else if (t1 < t3)
-			// {
-			// 	float angle = calc_light_angle_plane(t3, ray_direction, view, light, plane);
-			// 	int r = plane->rgb_color.r * angle * light->brightness;
-			// 	int g = plane->rgb_color.g * angle * light->brightness;
-			// 	int b = plane->rgb_color.b * angle * light->brightness;
-			// 	my_mlx_pixel_put(img, x, y, rgb_to_hex(r, g, b));
-			// }
-			else 
+
+			if (t3 > 0 && (closest_t < 0 || t3 < closest_t)) {
+				closest_t = t3;
+				float angle = calc_light_angle_plane(t3, ray.dir, view, light, plane);
+				r = plane->rgb_color.r * angle * light->brightness;
+				g = plane->rgb_color.g * angle * light->brightness;
+				b = plane->rgb_color.b * angle * light->brightness;
+			}
+
+			if (closest_t > 0) {
+				my_mlx_pixel_put(img, x, y, rgb_to_hex(r, g, b));
+			} else {
 				my_mlx_pixel_put(img, x, y, 0xADD8E6);
+			}
             y++;
         }
         x++;
@@ -157,31 +154,31 @@ void init_scene(t_view *view, t_light *light, t_sphere *sph1, t_sphere *sph2, t_
 	view->viewport_height = 2.0;
 	view->viewport_width = view->viewport_height * IMAGE_WIDTH / IMAGE_HEIGHT;
 
-	light->origin.x = 0;
-	light->origin.y = 100;
-	light->origin.z = 10;
+	light->origin.x = 10;
+	light->origin.y = 80;
+	light->origin.z = -10;
 	light->brightness = 1;
 
 	//red
-	sph1->center.x = 0;
+	sph1->center.x = -10;
 	sph1->center.y = 0;
 	sph1->center.z = -50;
-	sph1->radius = 30;
+	sph1->radius = 15;
 	sph1->color.r = 255;
 	sph1->color.g = 0;
 	sph1->color.b = 0;
 
 	//green
-	sph2->center.x = 0;
+	sph2->center.x = 10;
 	sph2->center.y = 0;
-	sph2->center.z = -150;
-	sph2->radius = 30;
+	sph2->center.z = -50;
+	sph2->radius = 10;
 	sph2->color.r = 0;
 	sph2->color.g = 255;
 	sph2->color.b = 0;
 
 	plane->center.x = 0;
-	plane->center.y = -10000;
+	plane->center.y = -100;
 	plane->center.z = 0;
 	plane->N.x = 0;
 	plane->N.y = 1;
