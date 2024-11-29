@@ -63,6 +63,14 @@ typedef struct s_sphere {
 	t_color color;
 } t_sphere;
 
+typedef struct
+{
+	t_point3 center;
+	t_vec3 N_axis_vec;
+	float diameter;
+	float height;
+	t_color color;
+} t_cylinder;
 
 
 typedef struct
@@ -76,5 +84,6 @@ typedef struct
 
 int	close_esc(int keycode, t_window *window);
 float hit_plane(t_ray ray, t_plane *plane);
+float hit_cylinder(const t_ray *ray, const t_cylinder *cylinder);
 
 #endif
