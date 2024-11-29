@@ -81,12 +81,81 @@ float calc_light_angle_plane(float t, t_vec3 ray_direction, t_view *view, t_ligh
 	return (pos_angle);
 }
 
-void create_image(t_img *img, t_view *view, t_light *light, t_sphere *sph1, t_sphere *sph2, t_plane *plane)
+int count_objects(t_object *obj_arr)
+{
+	int i;
+
+	if (obj_arr == NULL)
+		return (0);
+	i = 0;
+	while (obj_arr[i].object != NULL)
+		i++;
+	return (i);
+}
+
+void calc_t_for_objects(float *t, t_object *obj_arr, t_ray ray)
+{
+	int i;
+	int obj_cnt;
+	
+	obj_cnt = count_objects(obj_arr);
+	i = 0;
+	while (i < obj_cnt)
+	{
+		if (obj_arr[i].type == 0)
+		{
+			t_sphere *sphere = (t_sphere *)obj_arr[i].object;
+			t[i] = hit_sphere(sphere->center, sphere->radius, ray);
+		}
+		else if (obj_arr[i].type == 1)
+		{
+			t_plane *plane = (t_plane *)obj_arr[i].object;
+			t[i] = hit_plane(ray, plane);
+		}
+		i++;
+	}
+	// return (t);
+}
+
+unsigned int calc_color(int brightness, t_color color, float angle)
+{
+	int r, g, b;
+
+	r = color.r * angle * brightness;
+	g = color.g * angle * brightness;
+	b = color.b * angle * brightness;
+	return (rgb_to_hex(r, g, b));
+}
+
+float calc_closest_t(float *t_arr, int t_arr_size, int *obj_index)
+{
+	int i;
+	float t_temp;
+
+	t_temp = 10000.0;
+	*obj_index = -1;
+	i = 0;
+	while (i < t_arr_size)
+	{
+		if (t_arr[i] > 0 && t_arr[i] < t_temp)
+		{
+			t_temp = t_arr[i];
+			*obj_index = i;
+		}
+		i++;
+	}
+	if (*obj_index == -1)
+		return (-1);
+	return (t_temp);
+}
+
+void create_image2(t_img *img, t_view *view, t_light *light, t_object *obj_arr)
 {
 	t_ray ray;
-	float t1;
-	float t2;
-	float t3;
+	float *t;
+	int obj_cnt;
+
+	obj_cnt = count_objects(obj_arr);
 
 	t_vec3 pixel_delta_u;
 	t_vec3 pixel_delta_v;
@@ -102,42 +171,34 @@ void create_image(t_img *img, t_view *view, t_light *light, t_sphere *sph1, t_sp
         {
 			t_point3 pixel_center = vec_add(pixel00_loc, vec_add(vec_mul(pixel_delta_u, x),vec_mul(pixel_delta_v, y)));
 			ray.dir  = unit_vector(vec_sub(pixel_center, view->camera_center));
-            t1 = hit_sphere(sph1->center, sph1->radius, ray);
-            t2 = hit_sphere(sph2->center, sph2->radius, ray);
-			t3 = hit_plane(ray, plane);
-			float closest_t = -1;
-			int r = 0, g = 0, b = 0;
 
-			if (t1 > 0 && (closest_t < 0 || t1 < closest_t)) {
-				closest_t = t1;
-				float angle = calc_light_angle(t1, ray.dir, view, light, sph1);
-				r = sph1->color.r * angle * light->brightness;
-				g = sph1->color.g * angle * light->brightness;
-				b = sph1->color.b * angle * light->brightness;
-			}
-
-			if (t2 > 0 && (closest_t < 0 || t2 < closest_t)) {
-				closest_t = t2;
-				float angle = calc_light_angle(t2, ray.dir, view, light, sph2);
-				r = sph2->color.r * angle * light->brightness;
-				g = sph2->color.g * angle * light->brightness;
-				b = sph2->color.b * angle * light->brightness;
-			}
-
-			if (t3 > 0 && (closest_t < 0 || t3 < closest_t)) {
-				closest_t = t3;
-				float angle = calc_light_angle_plane(t3, ray.dir, view, light, plane);
-				r = plane->rgb_color.r * angle * light->brightness;
-				g = plane->rgb_color.g * angle * light->brightness;
-				b = plane->rgb_color.b * angle * light->brightness;
-			}
-
-			if (closest_t > 0) {
-				my_mlx_pixel_put(img, x, y, rgb_to_hex(r, g, b));
-			} else {
+			t = malloc(sizeof(float) * (obj_cnt + 1));
+			calc_t_for_objects(t, obj_arr, ray);
+			float closest_t;
+			int obj_index;
+			closest_t = calc_closest_t(t, obj_cnt, &obj_index);
+			if (closest_t < 0)
 				my_mlx_pixel_put(img, x, y, 0xADD8E6);
+			else
+			{
+				int r, g, b;
+				unsigned int pixel_color;
+				if (obj_arr[obj_index].type == 0)
+				{	
+					t_sphere *sphere = obj_arr[obj_index].object;
+					float angle = calc_light_angle(closest_t, ray.dir, view, light, sphere);	
+					pixel_color = calc_color(light->brightness, sphere->color, angle);
+				}
+				else if (obj_arr[obj_index].type == 1)
+				{
+					t_plane *plane = obj_arr[obj_index].object;
+					float angle = calc_light_angle_plane(closest_t, ray.dir, view, light, plane);	
+					pixel_color = calc_color(light->brightness, plane->color, angle);
+				}
+				my_mlx_pixel_put(img, x, y, pixel_color);
 			}
-            y++;
+			free(t);
+			y++;
         }
         x++;
     }
@@ -148,8 +209,22 @@ float calculate_viewport_width(float focal_length, float fov_degrees) {
     return 2.0 * focal_length * tan(fov_radians / 2.0);
 }
 
-void init_scene(t_view *view, t_light *light, t_sphere *sph1, t_sphere *sph2, t_plane *plane)
+void init_scene(t_view *view, t_light *light, t_object **obj_arr)
 {
+	t_sphere *sph1 = malloc(sizeof(t_sphere));
+	t_sphere *sph2 = malloc(sizeof(t_sphere));
+	t_plane *plane = malloc(sizeof(t_plane));
+
+	*obj_arr = malloc(sizeof(t_object) * 4);
+	(*obj_arr)[0].type = 0;
+	(*obj_arr)[0].object = sph1;
+	(*obj_arr)[1].type = 0;
+	(*obj_arr)[1].object = sph2;
+	(*obj_arr)[2].type = 1;
+	(*obj_arr)[2].object = plane;
+	(*obj_arr)[3].type = -1;
+	(*obj_arr)[3].object = NULL;
+
 	view->camera_center.x = 0;
 	view->camera_center.y = 0;
 	view->camera_center.z = 0;
@@ -192,9 +267,9 @@ void init_scene(t_view *view, t_light *light, t_sphere *sph1, t_sphere *sph2, t_
 	plane->N.x = 0;
 	plane->N.y = 1;
 	plane->N.z = 0;
-	plane->rgb_color.r = 0;
-	plane->rgb_color.g = 0;
-	plane->rgb_color.b = 255;
+	plane->color.r = 0;
+	plane->color.g = 0;
+	plane->color.b = 255;
 }
 
 int main() 
@@ -203,9 +278,9 @@ int main()
 	t_img img;
 	t_view view;
 	t_light light;
-	t_sphere sph1;
-	t_sphere sph2;
-	t_plane plane;
+
+	t_object *obj_arr;
+
 
 	window.mlx_ptr = mlx_init(); //todo: add check for failure
 	window.win_ptr = mlx_new_window(window.mlx_ptr, IMAGE_WIDTH, IMAGE_HEIGHT, WINDOW_TITLE); //todo: add check for failure
@@ -214,8 +289,9 @@ int main()
 	img.img = mlx_new_image(window.mlx_ptr, IMAGE_WIDTH, IMAGE_HEIGHT);
 	img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel, &img.line_length, &img.endian);
 
-	init_scene(&view, &light, &sph1, &sph2, &plane);
-	create_image(&img, &view, &light, &sph1, &sph2, &plane);
+	init_scene(&view, &light, &obj_arr);
+	// create_image(&img, &view, &light, &sph1, &sph2, &plane);
+	create_image2(&img, &view, &light, obj_arr);
 	mlx_put_image_to_window(window.mlx_ptr, window.win_ptr, img.img, 0, 0);
 	mlx_loop(window.mlx_ptr);
 }
