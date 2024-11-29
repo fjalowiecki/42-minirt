@@ -1,15 +1,15 @@
 #include "minirt.h"
 
-float hit_cylinder(const t_ray *ray, const t_cylinder *cylinder) {
+float hit_cylinder(t_ray *ray, const t_cylinder *cylinder) {
     // Cylinder parameters
     t_point3 c = cylinder->center;
-    t_vec3 a = cylinder->N_axis_vec; // Normalized axis
+    t_vec3 a = cylinder->N_axis_vec; // Ensure the axis is normalized
     float r = cylinder->diameter / 2.0;
     float h = cylinder->height;
-
+    
     // Ray parameters
     t_vec3 d = ray->dir;
-    t_vec3 o = vec_sub(ray->orig, c); //
+    t_vec3 o = vec_sub(ray->orig, c);
 
     // Solve for the lateral surface intersection
     t_vec3 d_perp = vec_sub(d, vec_mul(a, dot_product(d, a)));
@@ -76,4 +76,3 @@ float hit_cylinder(const t_ray *ray, const t_cylinder *cylinder) {
 
     return t_closest;
 }
-

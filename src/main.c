@@ -81,6 +81,17 @@ float calc_light_angle_plane(float t, t_vec3 ray_direction, t_view *view, t_ligh
 	return (pos_angle);
 }
 
+float calc_light_angle_cylinder(float t, t_vec3 ray_direction, t_view *view, t_light *light, t_cylinder *cyl)
+{			
+	t_point3 intersection = point_intersection(view->camera_center, ray_direction, t);
+	t_vec3 intersec_light = unit_vector(vec_sub(light->origin, intersection));
+	//tutaj wyliczyc normalną
+	float angle = dot_product(cyl->N_axis_vec, intersec_light);
+	float pos_angle = (angle > 0.0) ? angle : 0.0;
+
+	return (pos_angle);
+}
+
 int count_objects(t_object *obj_arr)
 {
 	int i;
@@ -111,6 +122,11 @@ void calc_t_for_objects(float *t, t_object *obj_arr, t_ray ray)
 		{
 			t_plane *plane = (t_plane *)obj_arr[i].object;
 			t[i] = hit_plane(ray, plane);
+		}
+		else if (obj_arr[i].type == 2)
+		{
+			t_cylinder *cylinder = (t_cylinder *)obj_arr[i].object;
+			t[i] = hit_cylinder(&ray, cylinder);
 		}
 		i++;
 	}
@@ -195,6 +211,12 @@ void create_image2(t_img *img, t_view *view, t_light *light, t_object *obj_arr)
 					float angle = calc_light_angle_plane(closest_t, ray.dir, view, light, plane);	
 					pixel_color = calc_color(light->brightness, plane->color, angle);
 				}
+				else if (obj_arr[obj_index].type == 2)
+				{
+					t_plane *cylinder = obj_arr[obj_index].object;
+					float angle = 0.9; //calc_light_angle_cylinder(closest_t, ray.dir, view, light, cylinder);	
+					pixel_color = calc_color(light->brightness, cylinder->color, angle);
+				}
 				my_mlx_pixel_put(img, x, y, pixel_color);
 			}
 			free(t);
@@ -214,16 +236,22 @@ void init_scene(t_view *view, t_light *light, t_object **obj_arr)
 	t_sphere *sph1 = malloc(sizeof(t_sphere));
 	t_sphere *sph2 = malloc(sizeof(t_sphere));
 	t_plane *plane = malloc(sizeof(t_plane));
+	t_plane *plane2 = malloc(sizeof(t_plane));
+	t_cylinder *cylinder = malloc(sizeof(t_cylinder));
 
-	*obj_arr = malloc(sizeof(t_object) * 4);
+	*obj_arr = malloc(sizeof(t_object) * 6);
 	(*obj_arr)[0].type = 0;
 	(*obj_arr)[0].object = sph1;
 	(*obj_arr)[1].type = 0;
 	(*obj_arr)[1].object = sph2;
 	(*obj_arr)[2].type = 1;
 	(*obj_arr)[2].object = plane;
-	(*obj_arr)[3].type = -1;
-	(*obj_arr)[3].object = NULL;
+	(*obj_arr)[3].type = 1;
+	(*obj_arr)[3].object = plane2;
+	(*obj_arr)[4].type = 2;
+	(*obj_arr)[4].object = cylinder;
+	(*obj_arr)[5].type = -1;
+	(*obj_arr)[5].object = NULL;
 
 	view->camera_center.x = 0;
 	view->camera_center.y = 0;
@@ -270,6 +298,29 @@ void init_scene(t_view *view, t_light *light, t_object **obj_arr)
 	plane->color.r = 0;
 	plane->color.g = 0;
 	plane->color.b = 255;
+
+	plane2->center.x = -500;
+	plane2->center.y = 0;
+	plane2->center.z = 0;
+	plane2->N.x = 1;
+	plane2->N.y = 0;
+	plane2->N.z = 0;
+	plane2->color.r = 0;
+	plane2->color.g = 0;
+	plane2->color.b = 255;
+
+	cylinder->center.x = 0;
+	cylinder->center.y = 0;
+	cylinder->center.z = -30;
+	cylinder->diameter = 10;
+	cylinder-> height = 10;
+	cylinder->N_axis_vec.x =  1.0;
+	cylinder->N_axis_vec.y =  0;
+	cylinder->N_axis_vec.z =  0;
+	cylinder->color.r = 255;
+	cylinder->color.g = 255;
+	cylinder->color.b = 0;
+
 }
 
 int main() 
