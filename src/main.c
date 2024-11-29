@@ -45,6 +45,8 @@ unsigned int rgb_to_hex(int r, int g, int b) {
 
 void set_viewport_pixel_parameters(t_view *view, t_vec3 *pixel_delta_u, t_vec3 *pixel_delta_v, t_vec3 *pixel00_loc)
 {
+	// float fov = 2 * atan(view->viewport_width / (2 * view->focal_length.z)) * (180 / PI);
+	// printf("fov: %f\n", fov);
    // Calculate the vectors across the horizontal and down the vertical viewport edges.
     t_vec3 viewport_u = {view->viewport_width, 0, 0};
     t_vec3 viewport_v = {0, -view->viewport_height, 0};
@@ -141,6 +143,11 @@ void create_image(t_img *img, t_view *view, t_light *light, t_sphere *sph1, t_sp
     }
 }
 
+float calculate_viewport_width(float focal_length, float fov_degrees) {
+    float fov_radians = fov_degrees * M_PI / 180.0;
+    return 2.0 * focal_length * tan(fov_radians / 2.0);
+}
+
 void init_scene(t_view *view, t_light *light, t_sphere *sph1, t_sphere *sph2, t_plane *plane)
 {
 	view->camera_center.x = 0;
@@ -152,7 +159,9 @@ void init_scene(t_view *view, t_light *light, t_sphere *sph1, t_sphere *sph2, t_
 	view->image_width = IMAGE_WIDTH;
 	view->image_height = IMAGE_HEIGHT;
 	view->viewport_height = 2.0;
-	view->viewport_width = view->viewport_height * IMAGE_WIDTH / IMAGE_HEIGHT;
+	view->fov_degrees = 70;
+	view->viewport_width = calculate_viewport_width(view->focal_length.z, view->fov_degrees);
+	view->viewport_height = view->viewport_width / (view->image_width/view->image_height);
 
 	light->origin.x = 10;
 	light->origin.y = 80;
@@ -162,7 +171,7 @@ void init_scene(t_view *view, t_light *light, t_sphere *sph1, t_sphere *sph2, t_
 	//red
 	sph1->center.x = -10;
 	sph1->center.y = 0;
-	sph1->center.z = -50;
+	sph1->center.z = -100;
 	sph1->radius = 15;
 	sph1->color.r = 255;
 	sph1->color.g = 0;
@@ -171,7 +180,7 @@ void init_scene(t_view *view, t_light *light, t_sphere *sph1, t_sphere *sph2, t_
 	//green
 	sph2->center.x = 10;
 	sph2->center.y = 0;
-	sph2->center.z = -50;
+	sph2->center.z = -100;
 	sph2->radius = 10;
 	sph2->color.r = 0;
 	sph2->color.g = 255;

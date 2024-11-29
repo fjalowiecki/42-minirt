@@ -14,6 +14,8 @@
 # define IMAGE_WIDTH 1024.0
 # define WINDOW_TITLE "miniRT"
 
+// # define M_PI 3.141592653589
+
 /*KEYCODES*/
 
 # define ESC 65307
@@ -46,6 +48,7 @@ typedef struct {
 	float image_height;
 	float viewport_height;
 	float viewport_width;
+	float fov_degrees;
 } t_view;
 
 typedef struct {
