@@ -99,6 +99,6 @@ typedef struct {
 
 int	close_esc(int keycode, t_window *window);
 float hit_plane(t_ray ray, t_plane *plane);
-float hit_cylinder(t_ray *ray, const t_cylinder *cylinder);
+float hit_cylinder(t_ray *ray, t_cylinder *cylinder);
 
 #endif

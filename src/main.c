@@ -81,12 +81,13 @@ float calc_light_angle_plane(float t, t_vec3 ray_direction, t_view *view, t_ligh
 	return (pos_angle);
 }
 
-float calc_light_angle_cylinder(float t, t_vec3 ray_direction, t_view *view, t_light *light, t_cylinder *cyl)
-{			
-	t_point3 intersection = point_intersection(view->camera_center, ray_direction, t);
+float calc_light_angle_cylinder(float t, t_ray ray, t_view *view, t_light *light, t_cylinder *cyl)
+{	
+	t_point3 intersection = vec_add(vec_mul(ray.dir, t), ray.orig); 		
+	t_vec3 intersect_to_center = vec_sub(intersection, cyl->center);
+	t_vec3 N = unit_vector(vec_sub(intersect_to_center, vec_mul(cyl->N_axis_vec, dot_product(intersect_to_center, cyl->N_axis_vec))));
 	t_vec3 intersec_light = unit_vector(vec_sub(light->origin, intersection));
-	//tutaj wyliczyc normalną
-	float angle = dot_product(cyl->N_axis_vec, intersec_light);
+	float angle = dot_product(N, intersec_light);
 	float pos_angle = (angle > 0.0) ? angle : 0.0;
 
 	return (pos_angle);
@@ -213,8 +214,8 @@ void create_image2(t_img *img, t_view *view, t_light *light, t_object *obj_arr)
 				}
 				else if (obj_arr[obj_index].type == 2)
 				{
-					t_plane *cylinder = obj_arr[obj_index].object;
-					float angle = 0.9; //calc_light_angle_cylinder(closest_t, ray.dir, view, light, cylinder);	
+					t_cylinder *cylinder = obj_arr[obj_index].object;
+					float angle = calc_light_angle_cylinder(closest_t, ray, view, light, cylinder);	
 					pixel_color = calc_color(light->brightness, cylinder->color, angle);
 				}
 				my_mlx_pixel_put(img, x, y, pixel_color);
@@ -309,15 +310,15 @@ void init_scene(t_view *view, t_light *light, t_object **obj_arr)
 	plane2->color.g = 0;
 	plane2->color.b = 255;
 
-	cylinder->center.x = 0;
+	cylinder->center.x = 5;
 	cylinder->center.y = 0;
-	cylinder->center.z = -30;
-	cylinder->diameter = 10;
-	cylinder-> height = 10;
-	cylinder->N_axis_vec.x =  1.0;
+	cylinder->center.z = -20;
+	cylinder->diameter = 5;
+	cylinder-> height = 5;
+	cylinder->N_axis_vec.x =  1;
 	cylinder->N_axis_vec.y =  0;
 	cylinder->N_axis_vec.z =  0;
-	cylinder->color.r = 255;
+	cylinder->color.r = 0;
 	cylinder->color.g = 255;
 	cylinder->color.b = 0;
 
