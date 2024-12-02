@@ -29,6 +29,12 @@ typedef struct t_window
 	void	*win_ptr;
 } t_window;
 
+enum s_inter_type
+{
+	TOP,
+	BOTTOM,
+	SIDE
+} t_inter_type;
 typedef struct 
 {
 	void	*img;
