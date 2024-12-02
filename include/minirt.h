@@ -62,6 +62,7 @@ typedef struct
 //todo: here go light parameters from file
 	t_point3 origin;
 	float brightness;
+	t_color color;
 } t_light;
 
 typedef struct s_sphere 
@@ -80,7 +81,6 @@ typedef struct
 	t_color color;
 } t_cylinder;
 
-
 typedef struct
 {
 	t_vec3 N;
@@ -88,15 +88,20 @@ typedef struct
 	t_color color;
 } t_plane;
 
-// typedef union {
-// 	t_sphere sphere;
-// 	t_plane plane;
-// } t_object_union;
-
-typedef struct {
+typedef struct 
+{
 	int type;
 	void *object;
 } t_object;
+
+typedef struct 
+{
+	t_view *view;
+	t_light *lights;
+	size_t light_cnt;
+	t_object *objects;
+	size_t objects_cnt;
+} t_data;
 
 /*FUNCTIONS*/
 
@@ -113,7 +118,7 @@ float hit_sphere(t_point3 center, float radius, t_ray r);
 float calc_light_angle_sphere(float t, t_vec3 ray_direction, t_view *view, t_light *light, t_sphere *sph);
 
 /* image_creation.c */
-void create_image(t_img *img, t_view *view, t_light *light, t_object *obj_arr);
+void create_image(t_img *img, t_data *data);
 
 /* mlx_utils.c */
 int	close_esc(int keycode, t_window *window);

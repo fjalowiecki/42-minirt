@@ -5,7 +5,7 @@ float calculate_viewport_width(float focal_length, float fov_degrees) {
     return 2.0 * focal_length * tan(fov_radians / 2.0);
 }
 
-void init_scene(t_view *view, t_light *light, t_object **obj_arr)
+void init_scene(t_data *data) //t_view *view, t_light **light, t_object **obj_arr)
 {
 	t_sphere *sph1 = malloc(sizeof(t_sphere));
 	t_sphere *sph2 = malloc(sizeof(t_sphere));
@@ -13,37 +13,44 @@ void init_scene(t_view *view, t_light *light, t_object **obj_arr)
 	t_plane *plane2 = malloc(sizeof(t_plane));
 	t_cylinder *cylinder = malloc(sizeof(t_cylinder));
 
-	*obj_arr = malloc(sizeof(t_object) * 6);
-	(*obj_arr)[0].type = 0;
-	(*obj_arr)[0].object = sph1;
-	(*obj_arr)[1].type = 0;
-	(*obj_arr)[1].object = sph2;
-	(*obj_arr)[2].type = 1;
-	(*obj_arr)[2].object = plane;
-	(*obj_arr)[3].type = 1;
-	(*obj_arr)[3].object = plane2;
-	(*obj_arr)[4].type = 2;
-	(*obj_arr)[4].object = cylinder;
-	(*obj_arr)[5].type = -1;
-	(*obj_arr)[5].object = NULL;
+	data->objects = malloc(sizeof(t_object) * 5);
+	data->objects[0].type = 0;
+	data->objects[0].object = sph1;
+	data->objects[1].type = 0;
+	data->objects[1].object = sph2;
+	data->objects[2].type = 1;
+	data->objects[2].object = plane;
+	data->objects[3].type = 1;
+	data->objects[3].object = plane2;
+	data->objects[4].type = 2;
+	data->objects[4].object = cylinder;
+	data->objects_cnt = 5;
 
-	view->camera_center.x = 0;
-	view->camera_center.y = 0;
-	view->camera_center.z = 0;
-	view->focal_length.x = 0;
-	view->focal_length.y = 0;
-	view->focal_length.z = 1;
-	view->image_width = IMAGE_WIDTH;
-	view->image_height = IMAGE_HEIGHT;
-	view->viewport_height = 2.0;
-	view->fov_degrees = 70;
-	view->viewport_width = calculate_viewport_width(view->focal_length.z, view->fov_degrees);
-	view->viewport_height = view->viewport_width / (view->image_width/view->image_height);
+	data->view = malloc(sizeof(t_view));
+	data->view->camera_center.x = 0;
+	data->view->camera_center.y = 0;
+	data->view->camera_center.z = 0;
+	data->view->focal_length.x = 0;
+	data->view->focal_length.y = 0;
+	data->view->focal_length.z = 1;
+	data->view->image_width = IMAGE_WIDTH;
+	data->view->image_height = IMAGE_HEIGHT;
+	data->view->viewport_height = 2.0;
+	data->view->fov_degrees = 70;
+	data->view->viewport_width = calculate_viewport_width(data->view->focal_length.z, data->view->fov_degrees);
+	data->view->viewport_height = data->view->viewport_width / (data->view->image_width/data->view->image_height);
 
-	light->origin.x = 0;
-	light->origin.y = 40;
-	light->origin.z = 0;
-	light->brightness = 1;
+	data->lights = malloc(sizeof(t_light) * 2);
+	data->lights[0].origin.x = 0;
+	data->lights[0].origin.y = 0;
+	data->lights[0].origin.z = 0;
+	data->lights[0].brightness = 0.2;
+	data->lights[0].color = (t_color){252, 15, 192};
+	data->lights[1].origin.x = 0;
+	data->lights[1].origin.y = 40;
+	data->lights[1].origin.z = 0;
+	data->lights[1].brightness = 0.8;
+	data->lights[1].color = (t_color){255, 255, 255};
 
 	//red
 	sph1->center.x = -10;
@@ -100,11 +107,7 @@ int main()
 {
 	t_window window;
 	t_img img;
-	t_view view;
-	t_light light;
-
-	t_object *obj_arr;
-
+	t_data data;
 
 	window.mlx_ptr = mlx_init(); //todo: add check for failure
 	window.win_ptr = mlx_new_window(window.mlx_ptr, IMAGE_WIDTH, IMAGE_HEIGHT, WINDOW_TITLE); //todo: add check for failure
@@ -113,8 +116,8 @@ int main()
 	img.img = mlx_new_image(window.mlx_ptr, IMAGE_WIDTH, IMAGE_HEIGHT);
 	img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel, &img.line_length, &img.endian);
 
-	init_scene(&view, &light, &obj_arr);
-	create_image(&img, &view, &light, obj_arr);
+	init_scene(&data);
+	create_image(&img, &data);
 	mlx_put_image_to_window(window.mlx_ptr, window.win_ptr, img.img, 0, 0);
 	mlx_loop(window.mlx_ptr);
 }
