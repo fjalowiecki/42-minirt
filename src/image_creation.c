@@ -49,24 +49,6 @@ static void calc_t_for_objects(float *t, t_object *obj_arr, size_t obj_cnt, t_ra
 	}
 }
 
-static unsigned int calc_color(t_light *lights, t_color object_color, float angle)
-{
-	int r, g, b;
-	int r_amb, g_amb, b_amb;
-
-	r_amb = lights[0].brightness * lights[0].color.r;
-	g_amb = lights[0].brightness * lights[0].color.g;
-	b_amb = lights[0].brightness * lights[0].color.b;
-	r = object_color.r * angle * lights[1].brightness + r_amb;
-	g = object_color.g * angle * lights[1].brightness + g_amb;
-	b = object_color.b * angle * lights[1].brightness + b_amb;
-
-	r = r < 255 ? r : 255;
-    g = g < 255 ? g : 255;
-    b = b < 255 ? b : 255;
-	return (rgb_to_hex(r, g, b));
-}
-
 static float calc_closest_t(float *t_arr, int t_arr_size, int *obj_index)
 {
 	int i;
@@ -89,28 +71,66 @@ static float calc_closest_t(float *t_arr, int t_arr_size, int *obj_index)
 	return (t_temp);
 }
 
+static unsigned int calc_color(t_data *data, t_color object_color, float *angles)
+{
+	int r, g, b;
+	int i;
+
+	r = data->amb_light->brightness * data->amb_light->color.r;
+	g = data->amb_light->brightness * data->amb_light->color.g;
+	b = data->amb_light->brightness * data->amb_light->color.b;
+	i = 0;
+	while (i < data->diff_lights_cnt)
+	{
+		r += object_color.r * angles[i] * data->diff_lights[i].brightness; //* (data->diff_lights[0].color.r / 255);
+		g += object_color.g * angles[i] * data->diff_lights[i].brightness; //* (data->diff_lights[0].color.g / 255);
+		b += object_color.b * angles[i] * data->diff_lights[i].brightness; //* (data->diff_lights[0].color.b / 255);
+		i++;
+	}
+	r = r < 255 ? r : 255;
+    g = g < 255 ? g : 255;
+    b = b < 255 ? b : 255;
+	return (rgb_to_hex(r, g, b));
+}
+
 static unsigned int calc_parameters_for_object(int obj_index, float closest_t, t_ray ray, t_data *data)
 {
 	unsigned int pixel_color;
+	int i;
+	float *angles = malloc(sizeof(float) * data->diff_lights_cnt);
 
+	i = 0;
 	if (data->objects[obj_index].type == 0)
 	{	
 		t_sphere *sphere = data->objects[obj_index].object;
-		float angle = calc_light_angle_sphere(closest_t, ray.dir, data->view, &(data->lights[1]), sphere);	
-		pixel_color = calc_color(data->lights, sphere->color, angle);
+		while (i < data->diff_lights_cnt)
+		{
+			angles[i] = calc_light_angle_sphere(closest_t, ray.dir, data->view, &(data->diff_lights[i]), sphere);
+			i++;
+		}
+		pixel_color = calc_color(data, sphere->color, angles);
 	}
 	else if (data->objects[obj_index].type == 1)
 	{
 		t_plane *plane = data->objects[obj_index].object;
-		float angle = calc_light_angle_plane(closest_t, ray.dir, data->view, &(data->lights[1]), plane);	
-		pixel_color = calc_color(data->lights, plane->color, angle);
+		while (i < data->diff_lights_cnt)
+		{
+			angles[i] = calc_light_angle_plane(closest_t, ray.dir, data->view, &(data->diff_lights[i]), plane);	
+			i++;
+		}
+		pixel_color = calc_color(data, plane->color, angles);
 	}
 	else if (data->objects[obj_index].type == 2)
 	{
 		t_cylinder *cylinder = data->objects[obj_index].object;
-		float angle = calc_light_angle_cylinder(closest_t, ray, data->view, &(data->lights[1]), cylinder);	
-		pixel_color = calc_color(data->lights, cylinder->color, angle);
+		while (i < data->diff_lights_cnt)
+		{
+			angles[i] = calc_light_angle_cylinder(closest_t, ray, data->view, &(data->diff_lights[i]), cylinder);
+			i++;
+		}	
+		pixel_color = calc_color(data, cylinder->color, angles);
 	}
+	free(angles);
 	return pixel_color;
 }
 
