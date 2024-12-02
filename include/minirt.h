@@ -7,6 +7,7 @@
 # include <X11/keysym.h>
 # include <math.h>
 # include <stdbool.h>
+# include <float.h>
 # include "vec_utils.h"
 # include "../mlx/mlx.h"
 
@@ -14,7 +15,9 @@
 # define IMAGE_WIDTH 1024.0
 # define WINDOW_TITLE "miniRT"
 
-// # define M_PI 3.141592653589
+#ifndef M_PI
+# define M_PI (3.14159265358979323846)
+#endif
 
 /*KEYCODES*/
 
@@ -97,8 +100,25 @@ typedef struct {
 
 /*FUNCTIONS*/
 
-int	close_esc(int keycode, t_window *window);
-float hit_plane(t_ray ray, t_plane *plane);
+/* hit_cylinder.c */
 float hit_cylinder(t_ray *ray, t_cylinder *cylinder);
+float calc_light_angle_cylinder(float t, t_ray ray, t_view *view, t_light *light, t_cylinder *cyl);
+
+/* hit_plane.c */
+float hit_plane(t_ray ray, t_plane *plane);
+float calc_light_angle_plane(float t, t_vec3 ray_direction, t_view *view, t_light *light, t_plane *plane);
+
+/* hit_sphere.c */
+float hit_sphere(t_point3 center, float radius, t_ray r);
+float calc_light_angle_sphere(float t, t_vec3 ray_direction, t_view *view, t_light *light, t_sphere *sph);
+
+/* image_creation.c */
+void create_image(t_img *img, t_view *view, t_light *light, t_object *obj_arr);
+
+/* mlx_utils.c */
+int	close_esc(int keycode, t_window *window);
+int	on_destroy(t_window *window);
+void	my_mlx_pixel_put(t_img *data, int x, int y, int color);
+unsigned int rgb_to_hex(int r, int g, int b);
 
 #endif

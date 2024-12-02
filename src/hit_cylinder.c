@@ -89,3 +89,15 @@ t_vec3 cylinder_normal(t_point3 intersection, t_cylinder *cyl) {
     t_vec3 intersect_to_center = vec_sub(intersection, cyl->center);
     return unit_vector(vec_sub(intersect_to_center, vec_mul(cyl->N_axis_vec, dot_product(intersect_to_center, cyl->N_axis_vec))));
 }
+
+float calc_light_angle_cylinder(float t, t_ray ray, t_view *view, t_light *light, t_cylinder *cyl)
+{	
+	t_point3 intersection = vec_add(vec_mul(ray.dir, t), ray.orig); 		
+	t_vec3 intersect_to_center = vec_sub(intersection, cyl->center);
+	t_vec3 N = unit_vector(vec_sub(intersect_to_center, vec_mul(cyl->N_axis_vec, dot_product(intersect_to_center, cyl->N_axis_vec))));
+	t_vec3 intersec_light = unit_vector(vec_sub(light->origin, intersection));
+	float angle = dot_product(N, intersec_light);
+	float pos_angle = (angle > 0.0) ? angle : 0.0;
+
+	return (pos_angle);
+}

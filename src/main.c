@@ -1,232 +1,5 @@
 #include "minirt.h"
 
-int	on_destroy(t_window *window)
-{
-	mlx_destroy_window(window->mlx_ptr, window->win_ptr);
-	mlx_destroy_display(window->mlx_ptr);
-	free(window->mlx_ptr);
-	exit(0);
-	return (0);
-}
-
-void	my_mlx_pixel_put(t_img *data, int x, int y, int color)
-{
-	char	*dst;
-
-	dst = data->addr + (y * data->line_length + x * (data->bits_per_pixel / 8));
-	*(unsigned int*)dst = color;
-}
-
-float hit_sphere(t_point3 center, float radius, t_ray r) {
-    t_vec3 oc = vec_sub(r.orig, center);
-    float a = dot_product(r.dir, r.dir);
-    float b = 2.0 * dot_product(r.dir, oc);
-    float c = dot_product(oc, oc) - radius * radius;
-    float discriminant = b * b - 4 * a * c;
-
-	if (discriminant < 0)
-		return (-1.0);
-	else
-    	return ((-b - sqrt(discriminant)) / (2.0 * a));
-}
-
-unsigned int rgb_to_hex(int r, int g, int b) {
-    // Upewnij się, że wartości RGB są w zakresie 0-255
-    if (r < 0) r = 0;
-    if (r > 255) r = 255;
-    if (g < 0) g = 0;
-    if (g > 255) g = 255;
-    if (b < 0) b = 0;
-    if (b > 255) b = 255;
-
-    // Konwertuj wartości RGB na zapis szesnastkowy
-    return (r << 16) | (g << 8) | b;
-}
-
-void set_viewport_pixel_parameters(t_view *view, t_vec3 *pixel_delta_u, t_vec3 *pixel_delta_v, t_vec3 *pixel00_loc)
-{
-	// float fov = 2 * atan(view->viewport_width / (2 * view->focal_length.z)) * (180 / PI);
-	// printf("fov: %f\n", fov);
-   // Calculate the vectors across the horizontal and down the vertical viewport edges.
-    t_vec3 viewport_u = {view->viewport_width, 0, 0};
-    t_vec3 viewport_v = {0, -view->viewport_height, 0};
-
-    // Calculate the horizontal and vertical delta vectors from pixel to pixel.
-    *pixel_delta_u = vec_mul(viewport_u, 1.0 / view->image_width);
-    *pixel_delta_v = vec_mul(viewport_v, 1.0 / view->image_height);
-
-    // Calculate the location of the upper left pixel.
-    t_vec3 viewport_upper_left = vec_sub(vec_sub(vec_sub(view->camera_center, view->focal_length),
-		vec_mul(viewport_u, 0.5)),vec_mul(viewport_v, 0.5));
-    *pixel00_loc = vec_add(viewport_upper_left, vec_mul(vec_add(*pixel_delta_u, *pixel_delta_v), 0.5));
-}
-
-float calc_light_angle(float t, t_vec3 ray_direction, t_view *view, t_light *light, t_sphere *sph)
-{			
-	t_point3 intersection = point_intersection(view->camera_center, ray_direction, t);
-	t_vec3 N =  unit_vector(vec_sub(intersection, sph->center));
-	t_vec3 intersec_light = unit_vector(vec_sub(light->origin, intersection));
-	float angle = dot_product(N, intersec_light);
-	float pos_angle = (angle > 0.0) ? angle : 0.0;
-
-	return (pos_angle);
-}
-float calc_light_angle_plane(float t, t_vec3 ray_direction, t_view *view, t_light *light, t_plane *sph)
-{			
-	t_point3 intersection = point_intersection(view->camera_center, ray_direction, t);
-	t_vec3 intersec_light = unit_vector(vec_sub(light->origin, intersection));
-	float angle = dot_product(sph->N, intersec_light);
-	float pos_angle = (angle > 0.0) ? angle : 0.0;
-
-	return (pos_angle);
-}
-
-float calc_light_angle_cylinder(float t, t_ray ray, t_view *view, t_light *light, t_cylinder *cyl)
-{	
-	t_point3 intersection = vec_add(vec_mul(ray.dir, t), ray.orig); 		
-	t_vec3 intersect_to_center = vec_sub(intersection, cyl->center);
-	t_vec3 N = unit_vector(vec_sub(intersect_to_center, vec_mul(cyl->N_axis_vec, dot_product(intersect_to_center, cyl->N_axis_vec))));
-	t_vec3 intersec_light = unit_vector(vec_sub(light->origin, intersection));
-	float angle = dot_product(N, intersec_light);
-	float pos_angle = (angle > 0.0) ? angle : 0.0;
-
-	return (pos_angle);
-}
-
-int count_objects(t_object *obj_arr)
-{
-	int i;
-
-	if (obj_arr == NULL)
-		return (0);
-	i = 0;
-	while (obj_arr[i].object != NULL)
-		i++;
-	return (i);
-}
-
-void calc_t_for_objects(float *t, t_object *obj_arr, t_ray ray)
-{
-	int i;
-	int obj_cnt;
-	
-	obj_cnt = count_objects(obj_arr);
-	i = 0;
-	while (i < obj_cnt)
-	{
-		if (obj_arr[i].type == 0)
-		{
-			t_sphere *sphere = (t_sphere *)obj_arr[i].object;
-			t[i] = hit_sphere(sphere->center, sphere->radius, ray);
-		}
-		else if (obj_arr[i].type == 1)
-		{
-			t_plane *plane = (t_plane *)obj_arr[i].object;
-			t[i] = hit_plane(ray, plane);
-		}
-		else if (obj_arr[i].type == 2)
-		{
-			t_cylinder *cylinder = (t_cylinder *)obj_arr[i].object;
-			t[i] = hit_cylinder(&ray, cylinder);
-		}
-		i++;
-	}
-	// return (t);
-}
-
-unsigned int calc_color(int brightness, t_color color, float angle)
-{
-	int r, g, b;
-
-	r = color.r * angle * brightness;
-	g = color.g * angle * brightness;
-	b = color.b * angle * brightness;
-	return (rgb_to_hex(r, g, b));
-}
-
-float calc_closest_t(float *t_arr, int t_arr_size, int *obj_index)
-{
-	int i;
-	float t_temp;
-
-	t_temp = 10000.0;
-	*obj_index = -1;
-	i = 0;
-	while (i < t_arr_size)
-	{
-		if (t_arr[i] > 0 && t_arr[i] < t_temp)
-		{
-			t_temp = t_arr[i];
-			*obj_index = i;
-		}
-		i++;
-	}
-	if (*obj_index == -1)
-		return (-1);
-	return (t_temp);
-}
-
-void create_image2(t_img *img, t_view *view, t_light *light, t_object *obj_arr)
-{
-	t_ray ray;
-	float *t;
-	int obj_cnt;
-
-	obj_cnt = count_objects(obj_arr);
-
-	t_vec3 pixel_delta_u;
-	t_vec3 pixel_delta_v;
-	t_vec3 pixel00_loc;
-	set_viewport_pixel_parameters(view, &pixel_delta_u, &pixel_delta_v, &pixel00_loc);
-
-	ray.orig = view->camera_center;
-    int x = 0;
-    while (x < IMAGE_WIDTH)
-    {
-        int y = 0;
-        while (y < IMAGE_HEIGHT)
-        {
-			t_point3 pixel_center = vec_add(pixel00_loc, vec_add(vec_mul(pixel_delta_u, x),vec_mul(pixel_delta_v, y)));
-			ray.dir  = unit_vector(vec_sub(pixel_center, view->camera_center));
-
-			t = malloc(sizeof(float) * (obj_cnt + 1));
-			calc_t_for_objects(t, obj_arr, ray);
-			float closest_t;
-			int obj_index;
-			closest_t = calc_closest_t(t, obj_cnt, &obj_index);
-			if (closest_t < 0)
-				my_mlx_pixel_put(img, x, y, 0xADD8E6);
-			else
-			{
-				int r, g, b;
-				unsigned int pixel_color;
-				if (obj_arr[obj_index].type == 0)
-				{	
-					t_sphere *sphere = obj_arr[obj_index].object;
-					float angle = calc_light_angle(closest_t, ray.dir, view, light, sphere);	
-					pixel_color = calc_color(light->brightness, sphere->color, angle);
-				}
-				else if (obj_arr[obj_index].type == 1)
-				{
-					t_plane *plane = obj_arr[obj_index].object;
-					float angle = calc_light_angle_plane(closest_t, ray.dir, view, light, plane);	
-					pixel_color = calc_color(light->brightness, plane->color, angle);
-				}
-				else if (obj_arr[obj_index].type == 2)
-				{
-					t_cylinder *cylinder = obj_arr[obj_index].object;
-					float angle = calc_light_angle_cylinder(closest_t, ray, view, light, cylinder);	
-					pixel_color = calc_color(light->brightness, cylinder->color, angle);
-				}
-				my_mlx_pixel_put(img, x, y, pixel_color);
-			}
-			free(t);
-			y++;
-        }
-        x++;
-    }
-}
-
 float calculate_viewport_width(float focal_length, float fov_degrees) {
     float fov_radians = fov_degrees * M_PI / 180.0;
     return 2.0 * focal_length * tan(fov_radians / 2.0);
@@ -267,9 +40,9 @@ void init_scene(t_view *view, t_light *light, t_object **obj_arr)
 	view->viewport_width = calculate_viewport_width(view->focal_length.z, view->fov_degrees);
 	view->viewport_height = view->viewport_width / (view->image_width/view->image_height);
 
-	light->origin.x = 10;
-	light->origin.y = 80;
-	light->origin.z = -10;
+	light->origin.x = 0;
+	light->origin.y = 40;
+	light->origin.z = 0;
 	light->brightness = 1;
 
 	//red
@@ -310,18 +83,17 @@ void init_scene(t_view *view, t_light *light, t_object **obj_arr)
 	plane2->color.g = 0;
 	plane2->color.b = 255;
 
-	cylinder->center.x = 5;
-	cylinder->center.y = 0;
-	cylinder->center.z = -20;
+	cylinder->center.x = 10;
+	cylinder->center.y = -10;
+	cylinder->center.z = -30;
 	cylinder->diameter = 5;
-	cylinder-> height = 5;
-	cylinder->N_axis_vec.x =  1;
-	cylinder->N_axis_vec.y =  0;
+	cylinder-> height = 7;
+	cylinder->N_axis_vec.x =  0;
+	cylinder->N_axis_vec.y =  1;
 	cylinder->N_axis_vec.z =  0;
 	cylinder->color.r = 0;
 	cylinder->color.g = 255;
 	cylinder->color.b = 0;
-
 }
 
 int main() 
@@ -342,8 +114,7 @@ int main()
 	img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel, &img.line_length, &img.endian);
 
 	init_scene(&view, &light, &obj_arr);
-	// create_image(&img, &view, &light, &sph1, &sph2, &plane);
-	create_image2(&img, &view, &light, obj_arr);
+	create_image(&img, &view, &light, obj_arr);
 	mlx_put_image_to_window(window.mlx_ptr, window.win_ptr, img.img, 0, 0);
 	mlx_loop(window.mlx_ptr);
 }
