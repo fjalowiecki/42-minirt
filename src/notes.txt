@@ -1,0 +1,3 @@
+todo:
+- enum dla typow obiekotow zeby zastąpic losowe 1,2...
+- zastanowic się jak zacienienie wpływa na dany pixel

@@ -101,9 +101,9 @@ void init_scene(t_data *data) //t_view *view, t_light **light, t_object **obj_ar
 	cylinder->center.z = -30;
 	cylinder->diameter = 5;
 	cylinder-> height = 7;
-	cylinder->N_axis_vec.x =  0;
+	cylinder->N_axis_vec.x =  -1;
 	cylinder->N_axis_vec.y =  1;
-	cylinder->N_axis_vec.z =  0;
+	cylinder->N_axis_vec.z =  1;
 	cylinder->color.r = 0;
 	cylinder->color.g = 255;
 	cylinder->color.b = 0;
