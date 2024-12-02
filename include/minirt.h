@@ -97,8 +97,9 @@ typedef struct
 typedef struct 
 {
 	t_view *view;
-	t_light *lights;
-	size_t light_cnt;
+	t_light *amb_light;
+	t_light *diff_lights;
+	size_t diff_lights_cnt;
 	t_object *objects;
 	size_t objects_cnt;
 } t_data;
