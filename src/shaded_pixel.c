@@ -37,6 +37,8 @@ bool shadow_ray_hit(t_ray *shadow_ray, t_data *data, int object_index, t_object 
 			t = hit_plane(*shadow_ray, ((t_plane *)(objects[i].object)));
 		else if (objects->type == 2 && t < light_distance)
 			t = hit_cylinder(shadow_ray, ((t_cylinder *)(objects[i].object)));
+		else if (objects->type == 3 && t < light_distance)
+			t = hit_cone(shadow_ray, ((t_cone *)(objects[i].object)));
 		if (t >= 0 && t < light_distance)
 			return(true);
 		i++;

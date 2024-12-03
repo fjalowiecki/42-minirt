@@ -107,6 +107,16 @@ typedef struct
 	size_t objects_cnt;
 } t_data;
 
+typedef struct s_cone
+{
+	t_point3 vertex;
+	t_color color;
+	t_vec3 axis;
+	float angle;//w radianach
+	float height;
+	int inter_type;
+} t_cone;
+
 /*FUNCTIONS*/
 
 /* hit_cylinder.c */
@@ -123,6 +133,11 @@ float calc_light_angle_sphere(float t, t_vec3 ray_direction, t_view *view, t_lig
 
 /* image_creation.c */
 void create_image(t_img *img, t_data *data);
+
+/*hit_cone.c*/
+float hit_cone(t_ray *ray, t_cone *cone);
+float calc_light_angle_cone(float t, t_ray ray, t_view *view, t_light *light, t_cone *cone);
+
 
 /* mlx_utils.c */
 int	close_esc(int keycode, t_window *window);

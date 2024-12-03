@@ -10,21 +10,26 @@ void init_scene(t_data *data) //t_view *view, t_light **light, t_object **obj_ar
 	t_sphere *sph1 = malloc(sizeof(t_sphere));
 	t_sphere *sph2 = malloc(sizeof(t_sphere));
 	t_plane *plane = malloc(sizeof(t_plane));
-	// t_plane *plane2 = malloc(sizeof(t_plane));
-	// t_cylinder *cylinder = malloc(sizeof(t_cylinder));
+	t_plane *plane2 = malloc(sizeof(t_plane));
+	t_cylinder *cylinder = malloc(sizeof(t_cylinder));
+	t_cone *cone = malloc(sizeof(t_cone));
 
-	data->objects = malloc(sizeof(t_object) * 3);
+
+	data->objects = malloc(sizeof(t_object) * 6);
 	data->objects[0].type = 0;
 	data->objects[0].object = sph1;
 	data->objects[1].type = 0;
 	data->objects[1].object = sph2;
 	data->objects[2].type = 1;
 	data->objects[2].object = plane;
-	// data->objects[3].type = 1;
-	// data->objects[3].object = plane2;
-	// data->objects[4].type = 2;
-	// data->objects[4].object = cylinder;
-	data->objects_cnt = 3;
+	data->objects[3].type = 1;
+	data->objects[3].object = plane2;
+	data->objects[4].type = 2;
+	data->objects[4].object = cylinder;
+	data->objects[5].type = 3;
+	data->objects[5].object = cone;
+
+	data->objects_cnt = 6;
 
 	data->view = malloc(sizeof(t_view));
 	data->view->camera_center.x = 0;
@@ -47,17 +52,16 @@ void init_scene(t_data *data) //t_view *view, t_light **light, t_object **obj_ar
 	data->amb_light->color = (t_color){255, 255, 255};
 
 	data->diff_lights = malloc(sizeof(t_light) * 2);
-	data->diff_lights[0].origin.x = -50;
-	data->diff_lights[0].origin.y = 50;
-	data->diff_lights[0].origin.z = -100;
-	data->diff_lights[0].brightness = 0;
-	data->diff_lights[0].color = (t_color){181, 181, 181};
-	data->diff_lights[1].origin.x = 30;
-	data->diff_lights[1].origin.y = 50;
-	data->diff_lights[1].origin.z = -40;
-	data->diff_lights[1].brightness = 0.5;
-	data->diff_lights[1].color = (t_color){0, 0, 0};
-	// data->diff_lights[1].color = (t_color){30, 21, 191};
+	data->diff_lights[0].origin.x = 0;
+	data->diff_lights[0].origin.y = 0;
+	data->diff_lights[0].origin.z = 0;
+	data->diff_lights[0].brightness = 0.2;
+	data->diff_lights[0].color = (t_color){255, 255, 255};
+	data->diff_lights[1].origin.x = -10;
+	data->diff_lights[1].origin.y = 10;
+	data->diff_lights[1].origin.z = 10;
+	data->diff_lights[1].brightness = 1;
+	data->diff_lights[1].color = (t_color){255, 0, 0};
 	data->diff_lights_cnt = 2;
 
 	//red
@@ -98,17 +102,30 @@ void init_scene(t_data *data) //t_view *view, t_light **light, t_object **obj_ar
 	// plane2->color.g = 0;
 	// plane2->color.b = 255;
 
-	// cylinder->center.x = 15;
-	// cylinder->center.y = -10;
-	// cylinder->center.z = -30;
-	// cylinder->diameter = 5;
-	// cylinder-> height = 7;
-	// cylinder->N_axis_vec.x =  -1;
-	// cylinder->N_axis_vec.y =  1;
-	// cylinder->N_axis_vec.z =  1;
-	// cylinder->color.r = 0;
-	// cylinder->color.g = 255;
-	// cylinder->color.b = 0;
+	cylinder->center.x = 10;
+	cylinder->center.y = -10;
+	cylinder->center.z = -40;
+	cylinder->diameter = 5;
+	cylinder-> height = 7;
+	cylinder->N_axis_vec.x =  -1;
+	cylinder->N_axis_vec.y =  1;
+	cylinder->N_axis_vec.z =  1;
+	cylinder->color.r = 0;
+	cylinder->color.g = 255;
+	cylinder->color.b = 0;
+
+	cone->angle = 0.7;
+	cone->axis.x = 0;
+	cone->axis.y = -0.1;
+	cone->axis.z = 0;
+	cone->color.r = 255;
+	cone->color.g = 0;
+	cone->color.b = 0;
+	cone->height = 10;
+	cone->vertex.x = 0;
+	cone->vertex.y = 0;
+	cone->vertex.z = -30;
+	
 }
 
 int main() 

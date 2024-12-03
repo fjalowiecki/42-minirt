@@ -1,3 +1,4 @@
 todo:
 - enum dla typow obiekotow zeby zastąpic losowe 1,2...
 - zastanowic się jak zacienienie wpływa na dany pixel
+- wektor osi nie moze byc zerowy (0,0,0)
