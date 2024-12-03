@@ -47,21 +47,21 @@ void init_scene(t_data *data) //t_view *view, t_light **light, t_object **obj_ar
 
 	data->amb_light = malloc(sizeof(t_light));
 	data->amb_light->origin = (t_vec3){0, 0, 0};
-	data->amb_light->brightness = 0;
+	data->amb_light->brightness = 0.1;
 	// data->amb_light->color = (t_color){191, 135, 21};
 	data->amb_light->color = (t_color){255, 255, 255};
 
 	data->diff_lights = malloc(sizeof(t_light) * 2);
-	data->diff_lights[0].origin.x = 0;
-	data->diff_lights[0].origin.y = 0;
-	data->diff_lights[0].origin.z = 0;
-	data->diff_lights[0].brightness = 0.2;
-	data->diff_lights[0].color = (t_color){255, 255, 255};
+	data->diff_lights[0].origin.x = -30;
+	data->diff_lights[0].origin.y = 100;
+	data->diff_lights[0].origin.z = -20;
+	data->diff_lights[0].brightness = 0.5;
+	data->diff_lights[0].color = (t_color){48, 41, 181};
 	data->diff_lights[1].origin.x = -10;
 	data->diff_lights[1].origin.y = 10;
 	data->diff_lights[1].origin.z = 10;
-	data->diff_lights[1].brightness = 1;
-	data->diff_lights[1].color = (t_color){255, 0, 0};
+	data->diff_lights[1].brightness = 0.4;
+	data->diff_lights[1].color = (t_color){120, 37, 37};
 	data->diff_lights_cnt = 2;
 
 	//red

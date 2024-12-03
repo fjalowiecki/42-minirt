@@ -155,7 +155,8 @@ static unsigned int calc_parameters_for_object(int obj_index, float closest_t, t
 			angles[i] = calc_light_angle_cone(closest_t, ray, data->view, &(data->diff_lights[i]), cone);
 			i++;
 		}	
-		pixel_color = calc_color(data, cone->color, angles);
+		t_point3 intersection = point_intersection(ray.orig, ray.dir, closest_t);
+		pixel_color = calc_color(obj_index, intersection, data, cone->color, angles);
 	}
 	free(angles);
 	return pixel_color;
