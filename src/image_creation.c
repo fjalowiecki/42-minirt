@@ -45,6 +45,11 @@ static void calc_t_for_objects(float *t, t_object *obj_arr, size_t obj_cnt, t_ra
 			t_cylinder *cylinder = (t_cylinder *)obj_arr[i].object;
 			t[i] = hit_cylinder(&ray, cylinder);
 		}
+		else if (obj_arr[i].type == 3)
+		{
+			t_cone *cone = (t_cone *)obj_arr[i].object;
+			t[i] = hit_cone(&ray, cone);
+		}
 		i++;
 	}
 }
@@ -129,6 +134,16 @@ static unsigned int calc_parameters_for_object(int obj_index, float closest_t, t
 			i++;
 		}	
 		pixel_color = calc_color(data, cylinder->color, angles);
+	}
+	else if (data->objects[obj_index].type == 3)
+	{
+		t_cone *cone = data->objects[obj_index].object;
+		while(i < data->diff_lights_cnt)
+		{
+			angles[i] = calc_light_angle_cone(closest_t, ray, data->view, &(data->diff_lights[i]), cone);
+			i++;
+		}	
+		pixel_color = calc_color(data, cone->color, angles);
 	}
 	free(angles);
 	return pixel_color;
