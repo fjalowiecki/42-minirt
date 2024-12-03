@@ -71,7 +71,7 @@ static float calc_closest_t(float *t_arr, int t_arr_size, int *obj_index)
 	return (t_temp);
 }
 
-static unsigned int calc_color(t_data *data, t_color object_color, float *angles)
+static unsigned int calc_color(int obj_index, t_point3 intersection, t_data *data, t_color object_color, float *angles)
 {
 	int r, g, b;
 	int i;
@@ -82,11 +82,20 @@ static unsigned int calc_color(t_data *data, t_color object_color, float *angles
 	i = 0;
 	while (i < data->diff_lights_cnt)
 	{
-		r += object_color.r * angles[i] * data->diff_lights[i].brightness; //* (data->diff_lights[0].color.r / 255);
-		g += object_color.g * angles[i] * data->diff_lights[i].brightness; //* (data->diff_lights[0].color.g / 255);
-		b += object_color.b * angles[i] * data->diff_lights[i].brightness; //* (data->diff_lights[0].color.b / 255);
-		i++;
+		if (shaded_pixel(obj_index, intersection, data->diff_lights[i].origin, data))
+		{
+			i++;
+			continue;
+		}
+        r += object_color.r * angles[i] * data->diff_lights[i].brightness;
+		r += data->diff_lights[i].brightness * angles[i] * data->diff_lights[i].color.r;
+        g += object_color.g * angles[i] * data->diff_lights[i].brightness;
+		g += data->diff_lights[i].brightness * angles[i] * data->diff_lights[i].color.g;
+        b += object_color.b * angles[i] * data->diff_lights[i].brightness;
+		b += data->diff_lights[i].brightness * angles[i] * data->diff_lights[i].color.b;
+        i++;
 	}
+
 	r = r < 255 ? r : 255;
     g = g < 255 ? g : 255;
     b = b < 255 ? b : 255;
@@ -108,7 +117,8 @@ static unsigned int calc_parameters_for_object(int obj_index, float closest_t, t
 			angles[i] = calc_light_angle_sphere(closest_t, ray.dir, data->view, &(data->diff_lights[i]), sphere);
 			i++;
 		}
-		pixel_color = calc_color(data, sphere->color, angles);
+		t_point3 intersection = point_intersection(ray.orig, ray.dir, closest_t);
+		pixel_color = calc_color(obj_index, intersection, data, sphere->color, angles);
 	}
 	else if (data->objects[obj_index].type == 1)
 	{
@@ -118,7 +128,8 @@ static unsigned int calc_parameters_for_object(int obj_index, float closest_t, t
 			angles[i] = calc_light_angle_plane(closest_t, ray.dir, data->view, &(data->diff_lights[i]), plane);	
 			i++;
 		}
-		pixel_color = calc_color(data, plane->color, angles);
+		t_point3 intersection = point_intersection(ray.orig, ray.dir, closest_t);
+		pixel_color = calc_color(obj_index, intersection, data, plane->color, angles);
 	}
 	else if (data->objects[obj_index].type == 2)
 	{
@@ -127,8 +138,9 @@ static unsigned int calc_parameters_for_object(int obj_index, float closest_t, t
 		{
 			angles[i] = calc_light_angle_cylinder(closest_t, ray, data->view, &(data->diff_lights[i]), cylinder);
 			i++;
-		}	
-		pixel_color = calc_color(data, cylinder->color, angles);
+		}
+		t_point3 intersection = point_intersection(ray.orig, ray.dir, closest_t);
+		pixel_color = calc_color(obj_index, intersection, data, cylinder->color, angles);
 	}
 	free(angles);
 	return pixel_color;
