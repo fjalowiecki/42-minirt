@@ -26,13 +26,13 @@ extension .rt
 	- each variable has to be separated my space (pointx pointy)
 	- each object has its own components and the order of insertion
 6. patern for each object:
-- Ambient lighting: "A(ID) 0.2(brightnes[0.0,1.0]) R,G,B(0-255)"
-- Camera: "C(ID) x,y,z(view_point) " 
-- Light:
-- Sphere:
-- Plane:
-- Cylinder:
-- Cone:
+- Ambient lighting: 3"A(ID) 0.2(brightnes[0.0,1.0]) R,G,B(0-255)"
+- Camera: 4"C(ID) x,y,z(view_point) xyz(3d_normalized_vec) FOV(0-180)" 
+- Light: 4"ID xyz light RGB"
+- Sphere: 4"ID xyz diameter RGB"
+- Plane: 4"ID xyz normalizednormalvector(xyz)(1-1) RGB "
+- Cylinder: 6"ID xyz 3d_normalized_vector_of_axis_of_cylinder(xyz (-1)-1) diameter height RGB"
+- Cone: 6"ID xyz(vertex) xyz(axis_vector) angle(radians) height RGB"
 */
 //A C L sp pl cy co
 //todo:each free input change to free_split
@@ -151,14 +151,13 @@ void get_objects(char **input, t_data *data, int *obj_types)
 		exit(1);
 	}
 	i = -1;
-	//checkpoint
 	while(input[++i])
 	{
-		if (set_obj(input[i], data) == -1)
+		if (set_obj(input[i], data, obj_types[i]) == -1)
 		{
 			free(input);
-			free(obj_types)
-			free_obj_i(data->objects, i);//todo:now we need to free all already alocated
+			free(obj_types);
+			free_alocated_obj(data->objects, i);//todo:now we need to free all already alocated
 			exit(1);
 		}
 	}
@@ -188,21 +187,49 @@ int allocate_obj(t_data *data, int *obj_types)
 		data->amb_light = malloc(sizeof(t_light) * lights);
 	if(!data->amb_light && lights != 0)
 		perror_return();
-	
+	return(0);
 }
 
 
 
-int set_obj(char *line, t_data *data)
+int set_obj(char *line, t_data *data, int type)
 {
-	int type;
 	char **obj_args;
+	int status;
 
-	type = define_obj_id(obj_args);
-	if (type == -1)
+	if(check_line(line) == -1)
+		return (-1);
+	obj_args= ft_split(line,' ');
+	if (!obj_args)
+		perror_return();
+	if(type == 1)
+		status = set_amb_light(obj_args, data);
+	if(type == 2)
+		status = set_camera(obj_args, data);
+	if(type == 3)
+		status = set_light(obj_args, data);
+	if(type > 3)
+		status = set_figures(type, obj_args, data);
+	free(obj_args);//todo:split free
+	if (status == -1)
+		return(-1);
+	return(0);
+}
+
+int check_line(char *line)
+{
+	int i;
+
+	i = 0;
+	while(line[i] && ft_isalpha(line[i]))
+		i++;
+	while(line[i])
 	{
-		ft_putstr_fd()
+		if(ft_isalpha(line[i]))
+			return(-1); 
+		i++;
 	}
+	return(0);
 }
 void check_chars(char **input, int nr_of_obj)
 {
@@ -213,7 +240,7 @@ void check_chars(char **input, int nr_of_obj)
 	while(input[++j])
 	{
 		i = 0;
-		if(input[j][i] ||!ft_isalpha(input[j][i]))
+		if(!input[j][i] || !ft_isalpha(input[j][i]))
 		{
 			free(input);
 			ft_putstr_fd("Error\nProgram accepts alphanumeric arguments and \".\"\",\"\"\\n\"\"space\" \"\n", 2);
@@ -221,10 +248,10 @@ void check_chars(char **input, int nr_of_obj)
 		}
 		while(input[j][i])
 		{
-	  		if (!ft_isalnum(input[j][i]) || !ft_strchr("., ",input[j][i]))
+	  		if (!ft_isalnum(input[j][i]) || !ft_strchr("., -",input[j][i]))
 			{
 				free(input);
-				ft_putstr_fd("Error\nProgram accepts alphanumeric arguments and \".\"\",\"\"\\n\"\"space\" \"\n", 2);
+				ft_putstr_fd("Error\nProgram accepts alphanumeric arguments and \".\"\",\"\"\\n\"\"space\" \"\n\"-\"", 2);
 				exit(1);
 			}
 			i++;
