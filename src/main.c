@@ -128,21 +128,44 @@ void init_scene(t_data *data) //t_view *view, t_light **light, t_object **obj_ar
 	
 }
 
-int main() 
+void init_window(t_window *window, t_img *img)
+{
+	window->mlx_ptr = NULL;
+	window->win_ptr = NULL;
+	img->img = NULL;
+	img->addr = NULL;
+
+	window->mlx_ptr = mlx_init();
+	if (window->mlx_ptr == NULL)
+		error_exit(MLX_ERR);
+	window->win_ptr = mlx_new_window(window->mlx_ptr, IMAGE_WIDTH, IMAGE_HEIGHT, WINDOW_TITLE);
+	if (window->win_ptr == NULL)
+	{
+		free(window->mlx_ptr);
+		error_exit(MLX_ERR);
+	}
+	img->img = mlx_new_image(window->mlx_ptr, IMAGE_WIDTH, IMAGE_HEIGHT);
+	if (img->img == NULL)
+	{
+		free(window->mlx_ptr);
+		free(window->win_ptr);
+		error_exit(MLX_ERR);
+	}
+	img->addr = mlx_get_data_addr(img->img, &img->bits_per_pixel, &img->line_length, &img->endian);
+}
+
+
+int	main()
 {
 	t_window window;
 	t_img img;
 	t_data data;
 
-	window.mlx_ptr = mlx_init(); //todo: add check for failure
-	window.win_ptr = mlx_new_window(window.mlx_ptr, IMAGE_WIDTH, IMAGE_HEIGHT, WINDOW_TITLE); //todo: add check for failure
-	mlx_hook(window.win_ptr, DestroyNotify, StructureNotifyMask, on_destroy, &window);
-	mlx_hook(window.win_ptr, 2, (1L << 0), close_esc, &window);//todo: unification of arguments
-	img.img = mlx_new_image(window.mlx_ptr, IMAGE_WIDTH, IMAGE_HEIGHT);
-	img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel, &img.line_length, &img.endian);
-
+	init_window(&window, &img);
 	init_scene(&data);
 	create_image(&img, &data);
 	mlx_put_image_to_window(window.mlx_ptr, window.win_ptr, img.img, 0, 0);
+	mlx_hook(window.win_ptr, DestroyNotify, StructureNotifyMask, on_destroy, &window);
+	mlx_hook(window.win_ptr, KeyPress, KeyPressMask, close_esc, &window);
 	mlx_loop(window.mlx_ptr);
 }

@@ -8,6 +8,7 @@
 # include <math.h>
 # include <stdbool.h>
 # include <float.h>
+# include <unistd.h>
 # include "vec_utils.h"
 # include "../mlx/mlx.h"
 
@@ -18,6 +19,8 @@
 #ifndef M_PI
 # define M_PI (3.14159265358979323846)
 #endif
+
+# define MLX_ERR "Error\nMinilibx failed\n"
 
 /*KEYCODES*/
 
@@ -97,16 +100,6 @@ typedef struct
 	void *object;
 } t_object;
 
-typedef struct 
-{
-	t_view *view;
-	t_light *amb_light;
-	t_light *diff_lights;
-	size_t diff_lights_cnt;
-	t_object *objects;
-	size_t objects_cnt;
-} t_data;
-
 typedef struct s_cone
 {
 	t_point3 vertex;
@@ -117,6 +110,28 @@ typedef struct s_cone
 	int inter_type;
 } t_cone;
 
+typedef struct 
+{
+	t_view *view;
+	t_light *amb_light;
+	t_light *diff_lights;
+	size_t diff_lights_cnt;
+	t_object *objects;
+	size_t objects_cnt;
+} t_data;
+
+typedef struct
+{
+	t_ray ray;
+	float closest_t;
+	int obj_index;
+	t_vec3 pixel_delta_u;
+	t_vec3 pixel_delta_v;
+	t_vec3 pixel00_loc;
+} t_pixel_data;
+
+typedef float	(*t_light_calc_fn)(float, t_ray, t_view*, t_light*, void*);
+
 /*FUNCTIONS*/
 
 /* hit_cylinder.c */
@@ -125,11 +140,11 @@ float calc_light_angle_cylinder(float t, t_ray ray, t_view *view, t_light *light
 
 /* hit_plane.c */
 float hit_plane(t_ray ray, t_plane *plane);
-float calc_light_angle_plane(float t, t_vec3 ray_direction, t_view *view, t_light *light, t_plane *plane);
+float calc_light_angle_plane(float t, t_ray ray, t_view *view, t_light *light, t_plane *plane);
 
 /* hit_sphere.c */
 float hit_sphere(t_point3 center, float radius, t_ray r);
-float calc_light_angle_sphere(float t, t_vec3 ray_direction, t_view *view, t_light *light, t_sphere *sph);
+float calc_light_angle_sphere(float t, t_ray ray, t_view *view, t_light *light, t_sphere *sph);
 
 /* image_creation.c */
 void create_image(t_img *img, t_data *data);
@@ -137,7 +152,6 @@ void create_image(t_img *img, t_data *data);
 /*hit_cone.c*/
 float hit_cone(t_ray *ray, t_cone *cone);
 float calc_light_angle_cone(float t, t_ray ray, t_view *view, t_light *light, t_cone *cone);
-
 
 /* mlx_utils.c */
 int	close_esc(int keycode, t_window *window);
@@ -147,5 +161,11 @@ unsigned int rgb_to_hex(int r, int g, int b);
 
 /* shaded_pixel.c */
 bool shaded_pixel(int object_index, t_point3 intersection, t_point3 light, t_data *data);
+
+/* error_msg.c */
+int perror_return(void);
+void perror_exit(void);
+int error_return(char *str);
+void error_exit(char *str);
 
 #endif

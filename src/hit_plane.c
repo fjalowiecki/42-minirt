@@ -24,9 +24,9 @@ float hit_plane(t_ray ray, t_plane *plane)
 	*/
 }
 
-float calc_light_angle_plane(float t, t_vec3 ray_direction, t_view *view, t_light *light, t_plane *plane)
+float calc_light_angle_plane(float t, t_ray ray, t_view *view, t_light *light, t_plane *plane)
 {			
-	t_point3 intersection = point_intersection(view->camera_center, ray_direction, t);
+	t_point3 intersection = point_intersection(view->camera_center, ray.dir, t);
 	t_vec3 intersec_light = unit_vector(vec_sub(light->origin, intersection));
 	float angle = dot_product(plane->N, intersec_light);
 	float pos_angle = (angle > 0.0) ? angle : 0.0;

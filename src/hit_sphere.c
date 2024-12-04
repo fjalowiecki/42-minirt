@@ -14,9 +14,9 @@ float hit_sphere(t_point3 center, float radius, t_ray r)
     	return ((-b - sqrt(discriminant)) / (2.0 * a));
 }
 
-float calc_light_angle_sphere(float t, t_vec3 ray_direction, t_view *view, t_light *light, t_sphere *sph)
+float calc_light_angle_sphere(float t, t_ray ray, t_view *view, t_light *light, t_sphere *sph)
 {			
-	t_point3 intersection = point_intersection(view->camera_center, ray_direction, t);
+	t_point3 intersection = point_intersection(view->camera_center, ray.dir, t);
 	t_vec3 N =  unit_vector(vec_sub(intersection, sph->center));
 	t_vec3 intersec_light = unit_vector(vec_sub(light->origin, intersection));
 	float angle = dot_product(N, intersec_light);
