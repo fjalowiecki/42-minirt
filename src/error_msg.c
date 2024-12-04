@@ -1,16 +1,5 @@
 #include "minirt.h"
 
-static int ft_strlen(char *str)
-{
-	int str_len = 0;
-
-	if (!str)
-		return (0);
-	while (str[str_len] != '\0')
-		str_len++;
-	return (str_len);
-}
-
 int perror_return(void)
 {
 	perror(NULL);
@@ -24,11 +13,11 @@ void perror_exit(void)
 
 int error_return(char *str)
 {
-	write(2, str, ft_strlen(str));
-	return (1);
+	ft_putstr_fd(str, 2);
+	return(1);
 }
 void error_exit(char *str)
 {
-	write(2, str, ft_strlen(str));
+	ft_putstr_fd(str,2);
 	exit(1);
 }

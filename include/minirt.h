@@ -11,6 +11,7 @@
 # include <unistd.h>
 # include "vec_utils.h"
 # include "../mlx/mlx.h"
+# include "../libft/libft.h"
 
 # define IMAGE_HEIGHT 768.0
 # define IMAGE_WIDTH 1024.0
@@ -28,6 +29,7 @@
 # define TOP 1
 # define SIDE 2
 # define BOTTOM 3
+
 typedef struct t_window
 {
 	void	*mlx_ptr;
@@ -153,11 +155,30 @@ void create_image(t_img *img, t_data *data);
 float hit_cone(t_ray *ray, t_cone *cone);
 float calc_light_angle_cone(float t, t_ray ray, t_view *view, t_light *light, t_cone *cone);
 
+/*free_resources.c*/
+void free_resources(t_data *data);
+void free_alocated_obj(t_data *data, int i);
+
+/*error_msg*/
+void error_exit(char *str);
+int error_return(char *str);
+void perror_exit(void);
+int perror_return(void);
+
+
 /* mlx_utils.c */
 int	close_esc(int keycode, t_window *window);
 int	on_destroy(t_window *window);
 void	my_mlx_pixel_put(t_img *data, int x, int y, int color);
 unsigned int rgb_to_hex(int r, int g, int b);
+
+/*obj_args.c*/
+t_color get_color(char *rgb, int *status);
+float get_float(char *str, int *status);
+t_point3 get_point(char *xyz, int *status);
+t_vec3 get_vec(char *xyz, int *status);
+
+
 
 /* shaded_pixel.c */
 bool shaded_pixel(int object_index, t_point3 intersection, t_point3 light, t_data *data);
