@@ -5,3 +5,4 @@ todo:
 - wsadzic komunikat o zasadach do headera i ustawic jako jeden z błedów
 - obiekty ktore moga pojawic sie wiecej niz raz w bonusie 
 - co sie dzieje jak czegos nie ma? kiedy wyrzucic bład w count_obj_types
+- poprawic wyswietlanie cieni 

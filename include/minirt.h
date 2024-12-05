@@ -179,7 +179,6 @@ t_point3 get_point(char *xyz, int *status);
 t_vec3 get_vec(char *xyz, int *status);
 
 
-
 /* shaded_pixel.c */
 bool shaded_pixel(int object_index, t_point3 intersection, t_point3 light, t_data *data);
 
