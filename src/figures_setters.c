@@ -19,8 +19,11 @@ int set_sphere (int i, char **obj_args, t_data *data)
 	sphere->color = get_color(obj_args[3], &status);
 	if (status == -1)
 		return(-1);
-
+	data->objects[i].object = (void *)(sphere);
+	i++;
+	return (0);
 }
+
 int set_plane (int i, char **obj_args, t_data *data)
 {
 	int status;
@@ -40,7 +43,11 @@ int set_plane (int i, char **obj_args, t_data *data)
 	plane->color = get_color(obj_args[3], &status);
 	if (status == -1)
 		return(-1);
+	data->objects[i].object = (void *)(plane);
+	i++;
+	return (0);
 }
+
 int set_cylinder (int i, char **obj_args, t_data *data)
 {
 	int status;
@@ -66,6 +73,10 @@ int set_cylinder (int i, char **obj_args, t_data *data)
 	cylinder->color = get_color(obj_args[5], &status);
 	if (status == -1)
 		return(-1);
+	data->objects[i].object = (void *)(cylinder);
+	i++;
+
+	return (0);
 }
 
 int set_cone (int i, char **obj_args, t_data *data)
@@ -93,4 +104,8 @@ int set_cone (int i, char **obj_args, t_data *data)
 	cone->color = get_color(obj_args[5], &status);
 	if (status == -1)
 		return(-1);
+	data->objects[i].object = (void *)(cone);
+	i++;
+	return (0);
 }
+
