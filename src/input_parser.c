@@ -48,7 +48,6 @@ void input_parser(int argc, char **argv, t_data *data)
 	check_file(argc, argv);
 	fd = open_file(argv[1]);
 	get_file_content(fd, data);
-		
 
 }
 
@@ -233,27 +232,30 @@ void check_chars(char **input, int *nr_of_obj)
 	int i;
 	int j;
 
-	j = -1;
-	while(input[++j])
+	j = 0;
+	while(input[j])
 	{
 		i = 0;
-		if(!input[j][i] || !ft_isalpha(input[j][i]))
+		if(input[j][i] && !ft_isalpha(input[j][i]))
 		{
+			printf("inu1t:%c\n",input[j][i]);
 			free(input);
-			ft_putstr_fd("Error\nProgram accepts alphanumeric arguments and \".\"\",\"\"\\n\"\"space\" \"\n", 2);
+			ft_putstr_fd("Error\nPPProgram accepts alphanumeric arguments and \".\"\",\"\"\\n\"\"space\" \"\n", 2);
 			exit(1);
 		}
 		while(input[j][i])
 		{
-	  		if (!ft_isalnum(input[j][i]) || !ft_strchr("., -",input[j][i]))
+	  		if (!ft_isalnum(input[j][i]) && !ft_strchr("., -",input[j][i]))
 			{
+				printf("char:%d|\n",input[j][i]);
 				free(input);
-				ft_putstr_fd("Error\nProgram accepts alphanumeric arguments and \".\"\",\"\"\\n\"\"space\" \"\n\"-\"", 2);
+				ft_putstr_fd("Error\nProgram accepts alphanumeric arguments and \".\"\",\"\"\\n\"\"space\" \"\"-\"\n", 2);
 				exit(1);
 			}
 			i++;
 		}
-		nr_of_obj++;
+		(*nr_of_obj)++;
+		j++;
 	}
 }
 void	check_file(int argc, char **argv)

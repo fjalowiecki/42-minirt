@@ -142,12 +142,13 @@ void	init_window(t_window *window, t_img *img)
 			&img->line_length, &img->endian);
 }
 
-int	main()
+int	main(int argc, char **argv)
 {
 	t_window	window;
 	t_img		img;
 	t_data		data;
 
+	input_parser(argc, argv, &data);
 	init_window(&window, &img);
 	init_scene(&data);
 	create_image(&img, &data);

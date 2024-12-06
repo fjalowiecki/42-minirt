@@ -163,11 +163,11 @@ int check_float(char *str)
 
 	int i;
 	com = 0;
-	if(str = '-')
+	if(str == '-')
 		str++;
 	while(str)
 	{
-		if(str == '.')
+		if(*str == '.')
 			com++;
 		if(!ft_isdigit(*str) && *str != '.')
 			return(-1);
