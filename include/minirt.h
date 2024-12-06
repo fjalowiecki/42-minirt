@@ -231,6 +231,7 @@ int check_vec(t_vec3 vector);
 int check_int(char *str);
 int check_float(char *str);
 float ft_atof(char *str);
+int arr_size(char **arr);
 
 
 

@@ -5,6 +5,7 @@ int set_amb_light(char **obj_args, t_data *data)
 	int status;
 	t_light *amb_light;
 
+	status = 0;
 	if(check_amount_args(obj_args, 3) == -1)
 		return (-1);
 	amb_light = malloc(sizeof(t_light));
@@ -25,6 +26,7 @@ int set_camera(char **obj_args, t_data *data)
 	t_view *view;
 	if(check_amount_args(obj_args, 4) == -1)
 		return (-1);
+	status = 0;
 	view = malloc(sizeof(t_view));
 	if(!view)
 		return(-1);
@@ -82,7 +84,7 @@ int check_amount_args(char **obj_args, int i)
 	int j;
 
 	j = 0;
-	while (obj_args[i])
+	while (obj_args[j])
 		j++;
 	if(j != i)
 		return (-1);

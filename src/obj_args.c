@@ -17,7 +17,7 @@ t_point3 get_point(char *xyz, int *status)
 	t_point3 point;
 	
 	xyz_splt = ft_split(xyz,',');
-	if(!xyz_splt || ft_strlen(xyz_splt) != 3)
+	if(!xyz_splt || arr_size(xyz_splt) != 3)
 	{
 		error_return("Error\nWrong xyz arguments for the point\n");
 		*status = -1;
@@ -26,6 +26,7 @@ t_point3 get_point(char *xyz, int *status)
 	point.x = get_float(xyz_splt[0], status);
 	point.y = get_float(xyz_splt[1], status);
 	point.z = get_float(xyz_splt[2], status);
+	printf("xyz:(%f,%f,%f)",point.x, point.y, point.z);
 	return(point);
 }
 
@@ -34,6 +35,7 @@ float get_float(char *str, int *status)
 	int i;
 	float neg;
 	int j;
+	float ret;
 
 	neg = 1;
 	i = 0;
@@ -54,7 +56,8 @@ float get_float(char *str, int *status)
 			return(-10000);
 		}
 	}
-	return ft_atof(str);
+	return(ft_atof(str) * neg);
+
 }
 
 t_color get_color(char *rgb, int *status)
@@ -64,7 +67,7 @@ t_color get_color(char *rgb, int *status)
 
 	color = ((t_color){0,0,0});
 	rgb_splt = ft_split(rgb,',');
-	if (!rgb || ft_strlen(rgb_splt) != 3)
+	if (!rgb ||  arr_size(rgb_splt)!= 3)
 	{
 		ft_putstr_fd("Error\nWrong number of arguments for RGB\n",2);
 		*status = -1;
@@ -91,17 +94,17 @@ int get_int(char *str, int *status)
 
 	neg = 1;
 	ret = 0;
-	if(check_int(str) == -1);
+	if(check_int(str) == -1)
 	{
-		return(-1);
 		status = -1;
+		return(-1);
 	}
 	if(*str == '-')
 	{
 		neg = -1;
 		str++;
 	}
-	while(str)
+	while(str && *str)
 	{
 		ret = ret * 10 + (*str - '0');
 		str++;
@@ -145,10 +148,11 @@ int check_int(char *str)
 {
 	int i;
 
-	while(str)
+	i = 0;
+	while(str && *str)
 	{
 		if(!ft_isdigit(*str))
-			return(error_return("Error\nRGB can take values in range 0-255(no comma)"));
+			return(error_return("Error\nRGB can take values in range 0-255(no comma)\n"));
 		str++;
 		i++;
 		if(i > 5)
@@ -163,9 +167,9 @@ int check_float(char *str)
 
 	int i;
 	com = 0;
-	if(str == '-')
+	if(str && *str == '-')
 		str++;
-	while(str)
+	while(str && *str)
 	{
 		if(*str == '.')
 			com++;
@@ -183,22 +187,38 @@ int check_float(char *str)
 
 float ft_atof(char *str)
 {
-	float ret;
-	int i; 
+    float ret = 0.0;
+    float decimal_part = 0.0;
+	int i = 0;
+	float divisor;
 
-	i = 1;
-	ret = 0;
-	while(str && *str != ',')
-	{
-		ret =  ret * 10 + (*str - '0');
-		str++;
-	}
-	if (str)
-		str++;
-	while(str && i < 1000)
-	{
-		ret = ret * 10 + (*str - '0');
-		i *= 10;
-	}
-	return(ret / i);
+    while (str[i] && str[i] != '.')
+    {
+        ret = ret * 10 + (str[i] - '0');
+        i++;
+    }
+    if (str[i] == '.')
+    {
+        i++;
+        divisor = 10.0;
+        while (str[i])
+        {
+            decimal_part += (str[i] - '0') / divisor;
+            divisor *= 10;
+            i++;
+        }
+    }
+    return ret + decimal_part;
+}
+
+int arr_size(char **arr)
+{
+	int i;
+
+	i = 0;
+	if(!arr)
+		return(0);
+	while(arr[i])
+		i++;
+	return(i);
 }

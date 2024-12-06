@@ -45,7 +45,7 @@ void input_parser(int argc, char **argv, t_data *data)
 	data->view = NULL;
 	data->amb_light = NULL;
 	data->diff_lights = NULL;
-	check_file(argc, argv);
+	//check_file(argc, argv);
 	fd = open_file(argv[1]);
 	get_file_content(fd, data);
 
@@ -67,11 +67,15 @@ int get_file_content(int fd, t_data *data)
 {
 	char buf[4096];
 	char **input;
-	if (read(fd, buf, 4096) <= 0)
+	int byt;
+
+	byt = read(fd, buf, 4096);
+	if (byt <= 0)
 	{
 		perror(NULL);
 		exit(1);
 	}
+	buf[byt] = '\0';
 	input = ft_split(buf, '\n');
 	if (!input)
 		exit(1);
@@ -113,14 +117,14 @@ int define_obj_types(char **input, int *obj_types)
 {
 	int i;
 
-	i = -1;
-	while(input[++i])
+	i = 0;
+	while(input[i])
 	{
 		if(!ft_strncmp(input[i], "A ", 2))
 			obj_types[i] = 1;
 		else if(!ft_strncmp(input[i], "C ", 2) )
 			obj_types[i] = 2;
-		else if(!ft_strncmp(input[i], "L ", 3) )
+		else if(!ft_strncmp(input[i], "L ", 2) )
 			obj_types[i] = 3;
 		else if(!ft_strncmp(input[i], "sp ", 3) )
 			obj_types[i] = 4;
@@ -132,6 +136,7 @@ int define_obj_types(char **input, int *obj_types)
 			obj_types[i] = 7;
 		else 
 			return(-1);
+		i++;
 	}
 	return (0);
 }
@@ -151,6 +156,7 @@ void get_objects(char **input, t_data *data, int *obj_types)
 	{
 		if (set_obj(input[i], data, obj_types[i]) == -1)
 		{
+			printf("echo\n");
 			free(input);
 			free(obj_types);
 			free_alocated_obj(data, i);//todo:now we need to free all already alocated
@@ -193,6 +199,8 @@ int set_obj(char *line, t_data *data, int type)
 	char **obj_args;
 	int status;
 
+	printf("type:%d\n", type);
+	status = 0;
 	if(check_line(line) == -1)
 		return (-1);
 	obj_args= ft_split(line,' ');
@@ -206,6 +214,7 @@ int set_obj(char *line, t_data *data, int type)
 		status = set_light(obj_args, data);
 	if(type > 3)
 		status = set_figures(type, obj_args, data);
+	printf("actual pointtt\n");
 	free(obj_args);//todo:split free
 	if (status == -1)
 		return(-1);
