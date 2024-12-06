@@ -2,19 +2,63 @@
 
 int set_amb_light(char **obj_args, t_data *data)
 {
+	int status;
+	t_light *amb_light;
+
 	if(check_amount_args(obj_args, 3) == -1)
 		return (-1);
+	amb_light = malloc(sizeof(t_light));
+	if(!amb_light)
+		return(-1);
+	amb_light->brightness = get_float(obj_args[1], &status);
+	if (status == -1)
+		return(-1);	
+	amb_light->color = get_color(obj_args[2], &status);
+	if (status == -1)
+		return(-1);
+	data->amb_light = amb_light;
+	return(0);
 }
 int set_camera(char **obj_args, t_data *data)
 {
+	int status;
+	t_view *view;
 	if(check_amount_args(obj_args, 4) == -1)
 		return (-1);
+	view = malloc(sizeof(t_view));
+	if(!view)
+		return(-1);
+	view->camera_center = get_point(obj_args[1], &status);
+	if (status == -1)
+		return(-1);	
+	view->focal_length = get_vec(obj_args[2], &status);
+	if (status == -1)
+		return(-1);	
+	view->fov_degrees = get_fov(obj_args[3], &status);
+	if (status == -1)
+		return(-1);	
+	data->view = view;
+	return(0);
 }
 
 int set_light(char **obj_args, t_data *data)
 {
+	static int i;
+	int status;
+	t_light light;
+
+	status = 0;
 	if(check_amount_args(obj_args, 4) == -1)
 		return (-1);
+	light.origin = get_point(obj_args[1], &status);
+	light.brightness = get_fov(obj_args[2], &status);
+	light.color = get_color(obj_args[3], &status);
+	if (status == -1)
+		return(-1);	
+	data->diff_lights[i] = light;
+	i++;
+	return(i);
+	
 }
 
 int set_figures(int type, char **obj_args, t_data *data)

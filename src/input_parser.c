@@ -36,11 +36,8 @@ extension .rt
 */
 //A C L sp pl cy co
 //todo:each free input change to free_split
-void	ft_file_checker(int argc, char **argv);
-int 	get_file_content(int fd, t_data *data);
-int 	open_file(char *file);
 
-void input_parser(int argc, char *argv, t_data *data)
+void input_parser(int argc, char **argv, t_data *data)
 {
 	int fd;
 
@@ -48,8 +45,8 @@ void input_parser(int argc, char *argv, t_data *data)
 	data->view = NULL;
 	data->amb_light = NULL;
 	data->diff_lights = NULL;
-	ft_check_file(argc, argv);
-	fd = open_file(argv);
+	check_file(argc, argv);
+	fd = open_file(argv[1]);
 	get_file_content(fd, data);
 		
 
@@ -88,7 +85,7 @@ void get_args(char ** input, t_data *data)
 {
 	int *obj_types;
 	data->objects_cnt = 0;
-	check_chars(input, &(data->objects_cnt));
+	check_chars(input, (int*)&(data->objects_cnt));
 	if (data->objects_cnt == 0)
 	{
 		ft_putstr_fd("Error\nNo objects in the file\n",2);
@@ -157,7 +154,7 @@ void get_objects(char **input, t_data *data, int *obj_types)
 		{
 			free(input);
 			free(obj_types);
-			free_alocated_obj(data->objects, i);//todo:now we need to free all already alocated
+			free_alocated_obj(data, i);//todo:now we need to free all already alocated
 			exit(1);
 		}
 	}
@@ -231,7 +228,7 @@ int check_line(char *line)
 	}
 	return(0);
 }
-void check_chars(char **input, int nr_of_obj)
+void check_chars(char **input, int *nr_of_obj)
 {
 	int i;
 	int j;
@@ -259,7 +256,7 @@ void check_chars(char **input, int nr_of_obj)
 		nr_of_obj++;
 	}
 }
-void	ft_file_checker(int argc, char **argv)
+void	check_file(int argc, char **argv)
 {
 	int	n;
 

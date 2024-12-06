@@ -187,4 +187,61 @@ void perror_exit(void);
 int error_return(char *str);
 void error_exit(char *str);
 
+
+void input_parser(int argc, char **argv, t_data *data);
+int open_file(char *file);
+int get_file_content(int fd, t_data *data);
+
+void get_args(char ** input, t_data *data);
+
+int define_obj_types(char **input, int *obj_types);
+
+void get_objects(char **input, t_data *data, int *obj_types);
+
+int allocate_obj(t_data *data, int *obj_types);
+
+int set_obj(char *line, t_data *data, int type);
+
+int check_line(char *line);
+
+
+void check_chars(char **input, int *nr_of_obj);
+
+void check_file(int argc, char **argv);
+
+int set_sphere (int i, char **obj_args, t_data *data);
+int set_plane (int i, char **obj_args, t_data *data);
+int set_cylinder (int i, char **obj_args, t_data *data);
+int set_cone (int i, char **obj_args, t_data *data);
+int set_amb_light(char **obj_args, t_data *data);
+int set_camera(char **obj_args, t_data *data);
+int set_light(char **obj_args, t_data *data);
+int set_figures(int type, char **obj_args, t_data *data);
+int check_amount_args(char **obj_args, int i);
+int sum_one_type(int type, t_data *data, int *obj_types);
+
+int get_fov(char *str, int *status);
+t_point3 get_point(char *xyz, int *status);
+
+float get_float(char *str, int *status);
+t_color get_color(char *rgb, int *status);
+int get_int(char *str, int *status);
+t_vec3 get_vec(char *xyz, int *status);
+int check_vec(t_vec3 vector);
+int check_int(char *str);
+int check_float(char *str);
+float ft_atof(char *str);
+
+
+
+
+
+
+
+
+
+
+
+
+
 #endif
