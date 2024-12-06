@@ -14,7 +14,6 @@ void init_scene(t_data *data) //t_view *view, t_light **light, t_object **obj_ar
 	t_cylinder *cylinder = malloc(sizeof(t_cylinder));
 	t_cone *cone = malloc(sizeof(t_cone));
 
-
 	data->objects = malloc(sizeof(t_object) * 6);
 	data->objects[0].type = 0;
 	data->objects[0].object = sph1;
@@ -48,7 +47,6 @@ void init_scene(t_data *data) //t_view *view, t_light **light, t_object **obj_ar
 	data->amb_light = malloc(sizeof(t_light));
 	data->amb_light->origin = (t_vec3){0, 0, 0};
 	data->amb_light->brightness = 0.1;
-	// data->amb_light->color = (t_color){191, 135, 21};
 	data->amb_light->color = (t_color){255, 255, 255};
 
 	data->diff_lights = malloc(sizeof(t_light) * 2);
@@ -64,7 +62,6 @@ void init_scene(t_data *data) //t_view *view, t_light **light, t_object **obj_ar
 	data->diff_lights[1].color = (t_color){120, 37, 37};
 	data->diff_lights_cnt = 2;
 
-	//red
 	sph1->center.x = -15;
 	sph1->center.y = 0;
 	sph1->center.z = -100;
@@ -73,7 +70,6 @@ void init_scene(t_data *data) //t_view *view, t_light **light, t_object **obj_ar
 	sph1->color.g = 25;
 	sph1->color.b = 25;
 
-	//green
 	sph2->center.x = 10;
 	sph2->center.y = -5;
 	sph2->center.z = -100;
@@ -91,16 +87,6 @@ void init_scene(t_data *data) //t_view *view, t_light **light, t_object **obj_ar
 	plane->color.r = 26;
 	plane->color.g = 16;
 	plane->color.b = 161;
-
-	// plane2->center.x = -500;
-	// plane2->center.y = 0;
-	// plane2->center.z = 0;
-	// plane2->N.x = 1;
-	// plane2->N.y = 0;
-	// plane2->N.z = 0;
-	// plane2->color.r = 0;
-	// plane2->color.g = 0;
-	// plane2->color.b = 255;
 
 	cylinder->center.x = 10;
 	cylinder->center.y = -10;
@@ -128,7 +114,7 @@ void init_scene(t_data *data) //t_view *view, t_light **light, t_object **obj_ar
 	
 }
 
-void init_window(t_window *window, t_img *img)
+void	init_window(t_window *window, t_img *img)
 {
 	window->mlx_ptr = NULL;
 	window->win_ptr = NULL;
@@ -138,7 +124,8 @@ void init_window(t_window *window, t_img *img)
 	window->mlx_ptr = mlx_init();
 	if (window->mlx_ptr == NULL)
 		error_exit(MLX_ERR);
-	window->win_ptr = mlx_new_window(window->mlx_ptr, IMAGE_WIDTH, IMAGE_HEIGHT, WINDOW_TITLE);
+	window->win_ptr = mlx_new_window(window->mlx_ptr,
+			IMAGE_WIDTH, IMAGE_HEIGHT, WINDOW_TITLE);
 	if (window->win_ptr == NULL)
 	{
 		free(window->mlx_ptr);
@@ -151,21 +138,22 @@ void init_window(t_window *window, t_img *img)
 		free(window->win_ptr);
 		error_exit(MLX_ERR);
 	}
-	img->addr = mlx_get_data_addr(img->img, &img->bits_per_pixel, &img->line_length, &img->endian);
+	img->addr = mlx_get_data_addr(img->img, &img->bits_per_pixel,
+			&img->line_length, &img->endian);
 }
-
 
 int	main()
 {
-	t_window window;
-	t_img img;
-	t_data data;
+	t_window	window;
+	t_img		img;
+	t_data		data;
 
 	init_window(&window, &img);
 	init_scene(&data);
 	create_image(&img, &data);
 	mlx_put_image_to_window(window.mlx_ptr, window.win_ptr, img.img, 0, 0);
-	mlx_hook(window.win_ptr, DestroyNotify, StructureNotifyMask, on_destroy, &window);
+	mlx_hook(window.win_ptr, DestroyNotify, StructureNotifyMask,
+		on_destroy, &window);
 	mlx_hook(window.win_ptr, KeyPress, KeyPressMask, close_esc, &window);
 	mlx_loop(window.mlx_ptr);
 }

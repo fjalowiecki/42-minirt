@@ -1,14 +1,16 @@
 #include "minirt.h"
 
-float hit_plane(t_ray ray, t_plane *plane)
+float hit_plane(t_ray *ray, void *obj)
 {
 	float ray_dot_N;
 	float t;
+	t_plane *plane;
 
-	ray_dot_N = dot_product(ray.dir, plane->N);
+	plane = (t_plane *)obj;
+	ray_dot_N = dot_product(ray->dir, plane->N);
     if (ray_dot_N == 0)
         return (-1.0); // Promień jest równoległy do płaszczyzny
- 	t = dot_product(vec_sub(plane->center, ray.orig), plane->N) / ray_dot_N;
+ 	t = dot_product(vec_sub(plane->center, ray->orig), plane->N) / ray_dot_N;
 	if (t < 0)
         return (-1.0); // Płaszczyzna znajduje się za początkowym punktem promienia
 	/* Potencjalnie
@@ -24,12 +26,18 @@ float hit_plane(t_ray ray, t_plane *plane)
 	*/
 }
 
-float calc_light_angle_plane(float t, t_ray ray, t_view *view, t_light *light, t_plane *plane)
-{			
-	t_point3 intersection = point_intersection(view->camera_center, ray.dir, t);
-	t_vec3 intersec_light = unit_vector(vec_sub(light->origin, intersection));
-	float angle = dot_product(plane->N, intersec_light);
-	float pos_angle = (angle > 0.0) ? angle : 0.0;
+float	calc_light_angle_plane(t_pixel_data *pixel_data,
+		t_view *view, t_light *light, t_plane *plane)
+{
+	t_point3	intersection;
+	t_vec3		intersec_light;
+	float		angle;
 
-	return (pos_angle);
+	intersection = point_intersection(view->camera_center,
+			pixel_data->ray.dir, pixel_data->closest_t);
+	intersec_light = unit_vector(vec_sub(light->origin, intersection));
+	angle = dot_product(plane->N, intersec_light);
+	if (angle < 0.0)
+		angle = 0.0;
+	return (angle);
 }

@@ -10,14 +10,13 @@ void perror_exit(void)
 	perror(NULL);
 	exit(1);
 }
-
 int error_return(char *str)
 {
-	ft_putstr_fd(str, 2);
+	write(2, str, ft_strlen(str));
 	return(1);
 }
 void error_exit(char *str)
 {
-	ft_putstr_fd(str,2);
+	write(2, str, ft_strlen(str));
 	exit(1);
 }

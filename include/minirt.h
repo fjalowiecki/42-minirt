@@ -9,19 +9,21 @@
 # include <stdbool.h>
 # include <float.h>
 # include <unistd.h>
+# include "../libft/libft.h"
 # include "vec_utils.h"
 # include "../mlx/mlx.h"
-# include "../libft/libft.h"
 
 # define IMAGE_HEIGHT 768.0
 # define IMAGE_WIDTH 1024.0
 # define WINDOW_TITLE "miniRT"
+# define T_MAX 10000
 
 #ifndef M_PI
 # define M_PI (3.14159265358979323846)
 #endif
 
 # define MLX_ERR "Error\nMinilibx failed\n"
+# define MALL_ERR "Error\nMalloc failed\n"
 
 /*KEYCODES*/
 
@@ -132,39 +134,37 @@ typedef struct
 	t_vec3 pixel00_loc;
 } t_pixel_data;
 
-typedef float	(*t_light_calc_fn)(float, t_ray, t_view*, t_light*, void*);
+typedef float	(*t_light_calc_fn)(t_pixel_data*, t_view*, t_light*, void*);
 
 /*FUNCTIONS*/
 
+/* image_creation - main, ray_params, pixel_color */
+void	create_image(t_img *img, t_data *data);
+void	calc_ray_params_for_pixel(t_data *data,
+	t_pixel_data *pixel_data, int x, int y);
+void	calc_closest_t_for_ray(t_data *data,
+	t_pixel_data *pixel_data);
+unsigned int	calc_color_for_pixel(t_data *data, t_pixel_data *pixel_data);
+
 /* hit_cylinder.c */
-float hit_cylinder(t_ray *ray, t_cylinder *cylinder);
-float calc_light_angle_cylinder(float t, t_ray ray, t_view *view, t_light *light, t_cylinder *cyl);
+float hit_cylinder(t_ray *ray, void *obj);
+float calc_light_angle_cylinder(t_pixel_data *pixel_data, t_view *view, t_light *light, t_cylinder *cyl);
 
 /* hit_plane.c */
-float hit_plane(t_ray ray, t_plane *plane);
-float calc_light_angle_plane(float t, t_ray ray, t_view *view, t_light *light, t_plane *plane);
+float hit_plane(t_ray *ray, void *obj);
+float calc_light_angle_plane(t_pixel_data *pixel_data, t_view *view, t_light *light, t_plane *plane);
 
 /* hit_sphere.c */
-float hit_sphere(t_point3 center, float radius, t_ray r);
-float calc_light_angle_sphere(float t, t_ray ray, t_view *view, t_light *light, t_sphere *sph);
-
-/* image_creation.c */
-void create_image(t_img *img, t_data *data);
+float hit_sphere(t_ray *ray, void *obj);
+float calc_light_angle_sphere(t_pixel_data *pixel_data, t_view *view, t_light *light, t_sphere *sph);
 
 /*hit_cone.c*/
-float hit_cone(t_ray *ray, t_cone *cone);
-float calc_light_angle_cone(float t, t_ray ray, t_view *view, t_light *light, t_cone *cone);
+float hit_cone(t_ray *ray, void *obj);
+float calc_light_angle_cone(t_pixel_data *pixel_data, t_view *view, t_light *light, t_cone *cone);
 
 /*free_resources.c*/
 void free_resources(t_data *data);
 void free_alocated_obj(t_data *data, int i);
-
-/*error_msg*/
-void error_exit(char *str);
-int error_return(char *str);
-void perror_exit(void);
-int perror_return(void);
-
 
 /* mlx_utils.c */
 int	close_esc(int keycode, t_window *window);
@@ -177,8 +177,6 @@ t_color get_color(char *rgb, int *status);
 float get_float(char *str, int *status);
 t_point3 get_point(char *xyz, int *status);
 t_vec3 get_vec(char *xyz, int *status);
-
-
 
 /* shaded_pixel.c */
 bool shaded_pixel(int object_index, t_point3 intersection, t_point3 light, t_data *data);

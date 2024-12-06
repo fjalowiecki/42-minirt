@@ -1,26 +1,39 @@
 #include "minirt.h"
 
-float hit_sphere(t_point3 center, float radius, t_ray r) 
+float	hit_sphere(t_ray *ray, void *obj)
 {
-    t_vec3 oc = vec_sub(r.orig, center);
-    float a = dot_product(r.dir, r.dir);
-    float b = 2.0 * dot_product(r.dir, oc);
-    float c = dot_product(oc, oc) - radius * radius;
-    float discriminant = b * b - 4 * a * c;
+	t_vec3	oc;
+	float	a;
+	float	b;
+	float	c;
+	float	discriminant;
 
+	oc = vec_sub(ray->orig, ((t_sphere *)obj)->center);
+	a = dot_product(ray->dir, ray->dir);
+	b = 2.0 * dot_product(ray->dir, oc);
+	c = dot_product(oc, oc) - ((t_sphere *)obj)->radius
+		* ((t_sphere *)obj)->radius;
+	discriminant = b * b - 4 * a * c;
 	if (discriminant < 0)
 		return (-1.0);
 	else
-    	return ((-b - sqrt(discriminant)) / (2.0 * a));
+		return ((-b - sqrt(discriminant)) / (2.0 * a));
 }
 
-float calc_light_angle_sphere(float t, t_ray ray, t_view *view, t_light *light, t_sphere *sph)
-{			
-	t_point3 intersection = point_intersection(view->camera_center, ray.dir, t);
-	t_vec3 N =  unit_vector(vec_sub(intersection, sph->center));
-	t_vec3 intersec_light = unit_vector(vec_sub(light->origin, intersection));
-	float angle = dot_product(N, intersec_light);
-	float pos_angle = (angle > 0.0) ? angle : 0.0;
+float	calc_light_angle_sphere(t_pixel_data *pixel_data,
+	t_view *view, t_light *light, t_sphere *sphere)
+{
+	t_point3	intersection;
+	t_vec3		norm_vec;
+	t_vec3		intersec_light;
+	float		angle;
 
-	return (pos_angle);
+	intersection = point_intersection(view->camera_center,
+			pixel_data->ray.dir, pixel_data->closest_t);
+	norm_vec = unit_vector(vec_sub(intersection, sphere->center));
+	intersec_light = unit_vector(vec_sub(light->origin, intersection));
+	angle = dot_product(norm_vec, intersec_light);
+	if (angle < 0.0)
+		angle = 0.0;
+	return (angle);
 }

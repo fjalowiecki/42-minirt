@@ -26,19 +26,14 @@ bool shadow_ray_hit(t_ray *shadow_ray, t_data *data, int object_index, t_object 
 	i = 0;
 	while(i < data->objects_cnt)
 	{
-		if (i == object_index)
-		{
-			i++;
-			continue;
-		}
 		if (objects->type == 0)
-			t = hit_sphere(((t_sphere *)(objects[i].object))->center, ((t_sphere *)(objects[i].object))->radius, *shadow_ray);
+			t = hit_sphere(shadow_ray, (objects[i].object));
 		else if (objects->type == 1 && t < light_distance)
-			t = hit_plane(*shadow_ray, ((t_plane *)(objects[i].object)));
+			t = hit_plane(shadow_ray, (objects[i].object));
 		else if (objects->type == 2 && t < light_distance)
-			t = hit_cylinder(shadow_ray, ((t_cylinder *)(objects[i].object)));
+			t = hit_cylinder(shadow_ray, objects[i].object);
 		else if (objects->type == 3 && t < light_distance)
-			t = hit_cone(shadow_ray, ((t_cone *)(objects[i].object)));
+			t = hit_cone(shadow_ray, objects[i].object);
 		if (t >= 0 && t < light_distance)
 			return(true);
 		i++;

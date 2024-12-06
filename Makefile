@@ -8,8 +8,8 @@ OBJS	= $(patsubst src/%.c, $(OBJS_DIR)/%.o, $(SRCS))
 CC		= gcc
 
 #CFLAGS	= -Wall -Wextra -Werror -I include/
-CFLAGS	= -I include/ -I libft/ -g -l/libft/libft.a
-LDFLAGS = -Lmlx -lmlx -L/usr/lib/X11 -lXext -lX11 -lm
+CFLAGS	= -I include/ -I libft/ -g
+LDFLAGS = -Lmlx -lmlx -L/usr/lib/X11 -lXext -lX11 -lm -Llibft -lft
 
 $(OBJS_DIR)/%.o: src/%.c
 	@echo "Compiling $<..."
@@ -17,7 +17,7 @@ $(OBJS_DIR)/%.o: src/%.c
 	@$(CC) $(CFLAGS) -c $< -o $@
 
 $(NAME): $(OBJS)
-	@$(CC) $(OBJS) $(LDFLAGS) -o $(NAME)
+	@$(CC) $(OBJS) $(CFLAGS) $(LDFLAGS) -o $(NAME)
 	@echo "Build of $(NAME) completed."
 
 all:	mlx $(NAME)
