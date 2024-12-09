@@ -32,6 +32,14 @@
 # define SIDE 2
 # define BOTTOM 3
 
+# define CAMERA		1
+# define DIF_LIGHT	2
+# define AMB_LIGHT	3
+# define SPHERE		4
+# define PLANE		5
+# define CONE		6
+# define CYLINDER	7
+
 typedef struct t_window
 {
 	void	*mlx_ptr;
@@ -232,16 +240,24 @@ int check_int(char *str);
 int check_float(char *str);
 float ft_atof(char *str);
 int arr_size(char **arr);
+void printf_split(char **str);
+float get_brightness(char *str, int *status);
 
 
 
+/*helpers.c*/
 
-
-
-
-
-
-
+void printf_all(t_data *data);
+void printf_objects(t_object *objects, size_t objects_cnt);
+void printf_lights(t_light *amb_light, t_light *diff_lights, size_t diff_lights_cnt);
+void printf_view(t_view *view);
+void printf_cylinder(t_cylinder *cylinder);
+void printf_cone(t_cone *cone);
+void printf_plane(t_plane *plane);
+void printf_sphere(t_sphere *sphere);
+void printf_vec3(t_vec3 vec);
+void printf_point3(t_point3 point);
+void printf_color(t_color color);
 
 
 

@@ -149,6 +149,7 @@ int	main(int argc, char **argv)
 	t_data		data;
 
 	input_parser(argc, argv, &data);
+	printf_all(&data);
 	init_window(&window, &img);
 	init_scene(&data);
 	create_image(&img, &data);
