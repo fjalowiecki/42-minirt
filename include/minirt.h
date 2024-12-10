@@ -264,6 +264,7 @@ void printf_sphere(t_sphere *sphere);
 void printf_vec3(t_vec3 vec);
 void printf_point3(t_point3 point);
 void printf_color(t_color color);
+void	free_split(char **str);
 
 
 
