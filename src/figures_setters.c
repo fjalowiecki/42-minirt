@@ -5,6 +5,8 @@ int set_sphere (int i, char **obj_args, t_data *data)
 	int status;
 	t_sphere *sphere;
 
+	status = 0;
+	printf_split(obj_args);
 	if(check_amount_args(obj_args, 4) == -1)
 		return (-1);
 	sphere = malloc(sizeof(t_sphere));
@@ -20,7 +22,6 @@ int set_sphere (int i, char **obj_args, t_data *data)
 	if (status == -1)
 		return(-1);
 	data->objects[i].object = (void *)(sphere);
-	i++;
 	return (0);
 }
 
@@ -28,7 +29,9 @@ int set_plane (int i, char **obj_args, t_data *data)
 {
 	int status;
 	t_plane *plane;
+	printf_split(obj_args);
 
+	status = 0;
 	if(check_amount_args(obj_args, 4) == -1)
 		return (-1);
 	plane = malloc(sizeof(t_plane));
@@ -44,7 +47,6 @@ int set_plane (int i, char **obj_args, t_data *data)
 	if (status == -1)
 		return(-1);
 	data->objects[i].object = (void *)(plane);
-	i++;
 	return (0);
 }
 
@@ -52,7 +54,9 @@ int set_cylinder (int i, char **obj_args, t_data *data)
 {
 	int status;
 	t_cylinder *cylinder;
+	printf_split(obj_args);
 
+	status = 0;
 	if(check_amount_args(obj_args, 6) == -1)
 		return (-1);
 	cylinder = malloc(sizeof(t_cylinder));
@@ -74,8 +78,6 @@ int set_cylinder (int i, char **obj_args, t_data *data)
 	if (status == -1)
 		return(-1);
 	data->objects[i].object = (void *)(cylinder);
-	i++;
-
 	return (0);
 }
 
@@ -83,7 +85,9 @@ int set_cone (int i, char **obj_args, t_data *data)
 {
 	int status;
 	t_cone *cone;
+	printf_split(obj_args);
 
+	status = 0;
 	if(check_amount_args(obj_args, 6) == -1)
 		return (-1);
 	cone = malloc(sizeof(t_cone));
@@ -105,7 +109,6 @@ int set_cone (int i, char **obj_args, t_data *data)
 	if (status == -1)
 		return(-1);
 	data->objects[i].object = (void *)(cone);
-	i++;
 	return (0);
 }
 

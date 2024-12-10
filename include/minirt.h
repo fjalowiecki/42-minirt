@@ -32,6 +32,14 @@
 # define SIDE 2
 # define BOTTOM 3
 
+# define CAMERA		6
+# define DIF_LIGHT	7
+# define AMB_LIGHT	8
+# define SPHERE		0
+# define PLANE		1
+# define CONE		3
+# define CYLINDER	2
+
 typedef struct t_window
 {
 	void	*mlx_ptr;
@@ -134,6 +142,12 @@ typedef struct
 	t_vec3 pixel00_loc;
 } t_pixel_data;
 
+typedef struct
+{
+	char **input;
+	char *obj_args;
+}	t_input;
+
 typedef float	(*t_light_calc_fn)(t_pixel_data*, t_view*, t_light*, void*);
 
 /*FUNCTIONS*/
@@ -231,16 +245,25 @@ int check_vec(t_vec3 vector);
 int check_int(char *str);
 int check_float(char *str);
 float ft_atof(char *str);
+int arr_size(char **arr);
+void printf_split(char **str);
+float get_brightness(char *str, int *status);
 
 
 
+/*helpers.c*/
 
-
-
-
-
-
-
+void printf_all(t_data *data);
+void printf_objects(t_object *objects, size_t objects_cnt);
+void printf_lights(t_light *amb_light, t_light *diff_lights, size_t diff_lights_cnt);
+void printf_view(t_view *view);
+void printf_cylinder(t_cylinder *cylinder);
+void printf_cone(t_cone *cone);
+void printf_plane(t_plane *plane);
+void printf_sphere(t_sphere *sphere);
+void printf_vec3(t_vec3 vec);
+void printf_point3(t_point3 point);
+void printf_color(t_color color);
 
 
 

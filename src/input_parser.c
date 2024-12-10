@@ -45,7 +45,7 @@ void input_parser(int argc, char **argv, t_data *data)
 	data->view = NULL;
 	data->amb_light = NULL;
 	data->diff_lights = NULL;
-	check_file(argc, argv);
+	//check_file(argc, argv);
 	fd = open_file(argv[1]);
 	get_file_content(fd, data);
 
@@ -67,11 +67,15 @@ int get_file_content(int fd, t_data *data)
 {
 	char buf[4096];
 	char **input;
-	if (read(fd, buf, 4096) <= 0)
+	int byt;
+
+	byt = read(fd, buf, 4096);
+	if (byt <= 0)
 	{
 		perror(NULL);
 		exit(1);
 	}
+	buf[byt] = '\0';
 	input = ft_split(buf, '\n');
 	if (!input)
 		exit(1);
@@ -113,25 +117,26 @@ int define_obj_types(char **input, int *obj_types)
 {
 	int i;
 
-	i = -1;
-	while(input[++i])
+	i = 0;
+	while(input[i])
 	{
 		if(!ft_strncmp(input[i], "A ", 2))
-			obj_types[i] = 1;
+			obj_types[i] = AMB_LIGHT;
 		else if(!ft_strncmp(input[i], "C ", 2) )
-			obj_types[i] = 2;
-		else if(!ft_strncmp(input[i], "L ", 3) )
-			obj_types[i] = 3;
+			obj_types[i] = CAMERA;
+		else if(!ft_strncmp(input[i], "L ", 2) )
+			obj_types[i] = DIF_LIGHT;
 		else if(!ft_strncmp(input[i], "sp ", 3) )
-			obj_types[i] = 4;
+			obj_types[i] = SPHERE;
 		else if(!ft_strncmp(input[i], "pl ", 3) )
-			obj_types[i] = 5;
+			obj_types[i] = PLANE;
 		else if(!ft_strncmp(input[i], "cy ", 3) )
-			obj_types[i] = 6;
+			obj_types[i] = CYLINDER;
 		else if(!ft_strncmp(input[i], "co ", 3) )
-			obj_types[i] = 7;
+			obj_types[i] = CONE;
 		else 
 			return(-1);
+		i++;
 	}
 	return (0);
 }
@@ -164,47 +169,48 @@ int allocate_obj(t_data *data, int *obj_types)
 	int lights;
 	int amb_light;
 
-	amb_light = sum_one_type(1, data, obj_types);
+	amb_light = sum_one_type(AMB_LIGHT, data, obj_types);
 	if (amb_light != 0 && amb_light != 1)
 		return(error_return("Error\nWrong amount of ambient light spots(0-1)\n"));
-	if(sum_one_type(2, data, obj_types) != 1)
+	if(sum_one_type(CAMERA, data, obj_types) != 1)
 		return(error_return("Error\nWrong amount of camera spots(0-1)\n"));
-	lights = sum_one_type(3, data, obj_types);
+	lights = sum_one_type(DIF_LIGHT, data, obj_types);
 	data->objects_cnt = data->objects_cnt - 1 - amb_light - lights;
 	if (data->objects_cnt != 0)
 		data->objects = malloc(sizeof(t_object) * data->objects_cnt);
 	if(!data->objects && data->objects_cnt != 0)
 		perror_return();
 	if(amb_light == 1)
-		data->amb_light = malloc(sizeof(t_view) * 1);
+		data->amb_light = malloc(sizeof(t_light) * 1);
 	if(!data->amb_light && amb_light == 1)
 		perror_return();
 	if(lights != 0)
-		data->amb_light = malloc(sizeof(t_light) * lights);
-	if(!data->amb_light && lights != 0)
+		data->diff_lights = malloc(sizeof(t_light) * lights);
+	if(!data->diff_lights && lights != 0)
 		perror_return();
+	data->diff_lights_cnt = lights;
 	return(0);
 }
-
-
 
 int set_obj(char *line, t_data *data, int type)
 {
 	char **obj_args;
 	int status;
 
+	printf("type:%d\n", type);
+	status = 0;
 	if(check_line(line) == -1)
 		return (-1);
 	obj_args= ft_split(line,' ');
 	if (!obj_args)
 		perror_return();
-	if(type == 1)
+	if(type == AMB_LIGHT)
 		status = set_amb_light(obj_args, data);
-	if(type == 2)
+	else if(type == CAMERA)
 		status = set_camera(obj_args, data);
-	if(type == 3)
+	else if(type == DIF_LIGHT)
 		status = set_light(obj_args, data);
-	if(type > 3)
+	else
 		status = set_figures(type, obj_args, data);
 	free(obj_args);//todo:split free
 	if (status == -1)

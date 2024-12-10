@@ -14,5 +14,5 @@ int sum_one_type(int type, t_data *data, int *obj_types)
 			counter++;		
 		i++;
 	}
-	return(i);
+	return(counter);
 }
