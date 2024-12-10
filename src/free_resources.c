@@ -25,3 +25,14 @@ void	free_alocated_obj(t_data *data, int i)
 	free(data->objects);
 	data->objects = NULL;
 }
+
+void	free_split(char **str)
+{
+	while(str && *str)
+	{
+		free(*str);
+		str++;
+	}
+	free(str);
+	str = NULL;
+}

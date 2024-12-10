@@ -14,6 +14,7 @@ int set_amb_light(char **obj_args, t_data *data)
 	data->amb_light->color = get_color(obj_args[2], &status);
 	if (status == -1)
 		return(-1);
+	data->amb_light->origin = (t_point3){0,0,0};
 	return(0);
 }
 int set_camera(char **obj_args, t_data *data)
@@ -59,7 +60,6 @@ int set_light(char **obj_args, t_data *data)
 		return(-1);	
 	data->diff_lights[i] = light;
 	i++;
-	return(i);
 	
 }
 
@@ -78,6 +78,7 @@ int set_figures(int type, char **obj_args, t_data *data)
 		status = set_cone(i,obj_args, data);
 	(data->objects[i]).type = type;
 	i++;
+	return(0);
 }
 
 int check_amount_args(char **obj_args, int i)

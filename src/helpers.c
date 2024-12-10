@@ -103,7 +103,6 @@ void printf_cylinder(t_cylinder *cylinder)
     printf("Height: %.3f\n", cylinder->height);
     printf("Color: ");
     printf_color(cylinder->color);
-    printf("Intersection Type: %d\n", cylinder->inter_type);
     printf("================\n");
 }
 
@@ -122,8 +121,6 @@ void printf_view(t_view *view)
     printf_point3(view->camera_center);
     printf("Focal Length: ");
     printf_point3(view->focal_length);
-    printf("Image Width: %.3f, Image Height: %.3f\n", view->image_width, view->image_height);
-    printf("Viewport Width: %.3f, Viewport Height: %.3f\n", view->viewport_width, view->viewport_height);
     printf("Field of View (degrees): %.3f\n", view->fov_degrees);
     printf("================\n");
 }

@@ -32,13 +32,13 @@
 # define SIDE 2
 # define BOTTOM 3
 
-# define CAMERA		1
-# define DIF_LIGHT	2
-# define AMB_LIGHT	3
-# define SPHERE		4
-# define PLANE		5
-# define CONE		6
-# define CYLINDER	7
+# define CAMERA		6
+# define DIF_LIGHT	7
+# define AMB_LIGHT	8
+# define SPHERE		0
+# define PLANE		1
+# define CONE		3
+# define CYLINDER	2
 
 typedef struct t_window
 {
@@ -141,6 +141,12 @@ typedef struct
 	t_vec3 pixel_delta_v;
 	t_vec3 pixel00_loc;
 } t_pixel_data;
+
+typedef struct
+{
+	char **input;
+	char *obj_args;
+}	t_input;
 
 typedef float	(*t_light_calc_fn)(t_pixel_data*, t_view*, t_light*, void*);
 

@@ -181,7 +181,7 @@ int allocate_obj(t_data *data, int *obj_types)
 	if(!data->objects && data->objects_cnt != 0)
 		perror_return();
 	if(amb_light == 1)
-		data->amb_light = malloc(sizeof(t_view) * 1);
+		data->amb_light = malloc(sizeof(t_light) * 1);
 	if(!data->amb_light && amb_light == 1)
 		perror_return();
 	if(lights != 0)

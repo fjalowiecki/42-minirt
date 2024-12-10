@@ -7,7 +7,12 @@ float calculate_viewport_width(float focal_length, float fov_degrees) {
 
 void init_scene(t_data *data) //t_view *view, t_light **light, t_object **obj_arr)
 {
-	t_sphere *sph1 = malloc(sizeof(t_sphere));
+	data->view->image_width = IMAGE_WIDTH;
+	data->view->image_height = IMAGE_HEIGHT;
+	data->view->viewport_height = 2.0;
+	data->view->viewport_width = calculate_viewport_width(data->view->focal_length.z, data->view->fov_degrees);
+	data->view->viewport_height = data->view->viewport_width / (data->view->image_width/data->view->image_height);
+	/*t_sphere *sph1 = malloc(sizeof(t_sphere));
 	t_sphere *sph2 = malloc(sizeof(t_sphere));
 	t_plane *plane = malloc(sizeof(t_plane));
 	t_plane *plane2 = malloc(sizeof(t_plane));
@@ -37,12 +42,6 @@ void init_scene(t_data *data) //t_view *view, t_light **light, t_object **obj_ar
 	data->view->focal_length.x = 0;
 	data->view->focal_length.y = 0;
 	data->view->focal_length.z = 1;
-	data->view->image_width = IMAGE_WIDTH;
-	data->view->image_height = IMAGE_HEIGHT;
-	data->view->viewport_height = 2.0;
-	data->view->fov_degrees = 70;
-	data->view->viewport_width = calculate_viewport_width(data->view->focal_length.z, data->view->fov_degrees);
-	data->view->viewport_height = data->view->viewport_width / (data->view->image_width/data->view->image_height);
 
 	data->amb_light = malloc(sizeof(t_light));
 	data->amb_light->origin = (t_vec3){0, 0, 0};
@@ -110,7 +109,7 @@ void init_scene(t_data *data) //t_view *view, t_light **light, t_object **obj_ar
 	cone->height = 10;
 	cone->vertex.x = 0;
 	cone->vertex.y = 0;
-	cone->vertex.z = -30;
+	cone->vertex.z = -30;*/
 	
 }
 
