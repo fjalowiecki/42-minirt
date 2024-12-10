@@ -19,21 +19,19 @@ void init_scene(t_data *data) //t_view *view, t_light **light, t_object **obj_ar
 	t_cylinder *cylinder = malloc(sizeof(t_cylinder));
 	t_cone *cone = malloc(sizeof(t_cone));
 
-	data->objects = malloc(sizeof(t_object) * 6);
-	data->objects[0].type = 0;
-	data->objects[0].object = sph1;
-	data->objects[1].type = 0;
-	data->objects[1].object = sph2;
-	data->objects[2].type = 1;
-	data->objects[2].object = plane;
-	data->objects[3].type = 1;
-	data->objects[3].object = plane2;
-	data->objects[4].type = 2;
-	data->objects[4].object = cylinder;
-	data->objects[5].type = 3;
-	data->objects[5].object = cone;
+    data->objects = malloc(sizeof(t_object) * 5);
+    data->objects[0].type = 0;
+    data->objects[0].object = sph1;
+    data->objects[1].type = 0;
+    data->objects[1].object = sph2;
+    data->objects[2].type = 1;
+    data->objects[2].object = plane;
+    data->objects[3].type = 2;
+    data->objects[3].object = cylinder;
+    data->objects[4].type = 3;
+    data->objects[4].object = cone;
 
-	data->objects_cnt = 6;
+    data->objects_cnt = 5;
 
 	data->view = malloc(sizeof(t_view));
 	data->view->camera_center.x = 0;
@@ -43,10 +41,8 @@ void init_scene(t_data *data) //t_view *view, t_light **light, t_object **obj_ar
 	data->view->focal_length.y = 0;
 	data->view->focal_length.z = 1;
 
-	data->amb_light = malloc(sizeof(t_light));
-	data->amb_light->origin = (t_vec3){0, 0, 0};
-	data->amb_light->brightness = 0.1;
-	data->amb_light->color = (t_color){255, 255, 255};
+    data->amb_light = malloc(sizeof(t_light));
+    init_light(data->amb_light, 0, 0, 0, 0.1, 255, 255, 255);
 
 	data->diff_lights = malloc(sizeof(t_light) * 2);
 	data->diff_lights[0].origin.x = -30;

@@ -82,12 +82,25 @@ typedef struct
 	t_color color;
 } t_light;
 
+typedef struct 
+{
+	int type;
+	void *object;
+} t_object;
+
 typedef struct s_sphere 
 {
 	t_point3 center;
 	double radius;
 	t_color color;
 } t_sphere;
+
+typedef struct
+{
+	t_vec3 N;
+	t_point3 center;
+	t_color color;
+} t_plane;
 
 typedef struct
 {
@@ -98,19 +111,6 @@ typedef struct
 	t_color color;
 	int inter_type;
 } t_cylinder;
-
-typedef struct
-{
-	t_vec3 N;
-	t_point3 center;
-	t_color color;
-} t_plane;
-
-typedef struct 
-{
-	int type;
-	void *object;
-} t_object;
 
 typedef struct s_cone
 {
