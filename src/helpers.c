@@ -121,7 +121,7 @@ void printf_view(t_view *view)
     printf_point3(view->camera_center);
     printf("Focal Length: ");
     printf_point3(view->focal_length);
-    printf("Field of View (degrees): %.3f\n", view->fov_degrees);
+    printf("Field of View (degrees): %f\n", view->fov_degrees);
     printf("================\n");
 }
 

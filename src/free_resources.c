@@ -19,21 +19,27 @@ void	free_alocated_obj(t_data *data, int i)
 	counter = 0;
 	while(counter < i)
 	{
-		free(data->objects[counter].object);
+		if(data->objects[counter].object)
+			free(data->objects[counter].object);
 		counter++;
 	}
 	free(data->objects);
 	data->objects = NULL;
 }
 
-void	free_split(char **str)
+int	free_split(char **str)
 {
-	while(str && *str)
+	int i;
+
+	i = 0;
+	if (!str)
+		return (-1);
+	while(str && str[i])
 	{
-		free(*str);
-		str++;
+		free(str[i]);
+		i++;
 	}
 	free(str);
-	str = NULL;
+	return(-1);
 }
 

@@ -13,7 +13,7 @@ void perror_exit(void)
 int error_return(char *str)
 {
 	write(2, str, ft_strlen(str));
-	return(1);
+	return(-1);
 }
 void error_exit(char *str)
 {

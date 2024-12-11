@@ -6,3 +6,6 @@ todo:
 - obiekty ktore moga pojawic sie wiecej niz raz w bonusie 
 - co sie dzieje jak czegos nie ma? kiedy wyrzucic bład w count_obj_types
 - poprawic wyswietlanie cieni 
+- jak rozwiazac ....
+- przedyskutowac zwracanie w obj_arg
+- sprawdzic parser na podstawie błednych danych w kontekscie leakow

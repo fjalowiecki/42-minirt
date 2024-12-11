@@ -56,10 +56,7 @@ int open_file(char *file)
 	int fd;
 	fd = open(file, O_RDONLY);
 	if (fd < 0)
-	{
-		perror(NULL);
-		exit(1);
-	}
+		perror_exit();
 	return(fd);
 }
 
@@ -71,16 +68,13 @@ int get_file_content(int fd, t_data *data)
 
 	byt = read(fd, buf, 4096);
 	if (byt <= 0)
-	{
-		perror(NULL);
-		exit(1);
-	}
+		perror_exit();
 	buf[byt] = '\0';
 	input = ft_split(buf, '\n');
 	if (!input)
-		exit(1);
+		perror_exit();
 	get_args(input, data);
-	free(input);
+	free_split(input);
 }
 
 void get_args(char ** input, t_data *data)
@@ -91,25 +85,23 @@ void get_args(char ** input, t_data *data)
 	check_chars(input, (int*)&(data->objects_cnt));
 	if (data->objects_cnt == 0)
 	{
-		ft_putstr_fd("Error\nNo objects in the file\n",2);
 		free_split(input);
-		exit(1);
+		error_exit("Error\nNo objects in the file\n");
 	}
 	obj_types = malloc(sizeof(int) * data->objects_cnt);
 	if (!obj_types)
 	{
-		perror(NULL);
 		free_split(input);
-		exit(1);
+		perror_exit();
 	}
 	if (define_obj_types(input, obj_types) == -1)
 	{
-		ft_putstr_fd("Error\nWrong object's id\n",2);
-		free(input);
+		free_split(input);
 		free(obj_types);
-		exit(1);
+		error_exit("Error\nWrong object's id\n");
 	}
 	get_objects(input, data, obj_types);
+	free(obj_types);
 }
 
 int define_obj_types(char **input, int *obj_types)
@@ -155,13 +147,12 @@ void get_objects(char **input, t_data *data, int *obj_types)
 	{
 		if (set_obj(input[i], data, obj_types[i]) == -1)
 		{
-			free(input);
+			free_split(input);
 			free(obj_types);
-			free_alocated_obj(data, i);//todo:now we need to free all already alocated
+			free_resources(data);
 			exit(1);
 		}
 	}
-	free(obj_types);
 }
 
 int allocate_obj(t_data *data, int *obj_types)
@@ -189,6 +180,7 @@ int allocate_obj(t_data *data, int *obj_types)
 	if(!data->diff_lights && lights != 0)
 		perror_return();
 	data->diff_lights_cnt = lights;
+	null_obj(data);
 	return(0);
 }
 
@@ -197,7 +189,6 @@ int set_obj(char *line, t_data *data, int type)
 	char **obj_args;
 	int status;
 
-	printf("type:%d\n", type);
 	status = 0;
 	if(check_line(line) == -1)
 		return (-1);
@@ -212,7 +203,7 @@ int set_obj(char *line, t_data *data, int type)
 		status = set_light(obj_args, data);
 	else
 		status = set_figures(type, obj_args, data);
-	free(obj_args);//todo:split free
+	free_split(obj_args);
 	if (status == -1)
 		return(-1);
 	return(0);
@@ -244,8 +235,7 @@ void check_chars(char **input, int *nr_of_obj)
 		i = 0;
 		if(input[j][i] && !ft_isalpha(input[j][i]))
 		{
-			printf("inu1t:%c\n",input[j][i]);
-			free(input);
+			free_split(input);
 			ft_putstr_fd("Error\nPPProgram accepts alphanumeric arguments and \".\"\",\"\"\\n\"\"space\" \"\n", 2);
 			exit(1);
 		}
@@ -253,8 +243,7 @@ void check_chars(char **input, int *nr_of_obj)
 		{
 	  		if (!ft_isalnum(input[j][i]) && !ft_strchr("., -",input[j][i]))
 			{
-				printf("char:%d|\n",input[j][i]);
-				free(input);
+				free_split(input);
 				ft_putstr_fd("Error\nProgram accepts alphanumeric arguments and \".\"\",\"\"\\n\"\"space\" \"\"-\"\n", 2);
 				exit(1);
 			}
@@ -288,5 +277,17 @@ void	check_file(int argc, char **argv)
 	{
 		ft_putstr_fd("Error\nWrong file extension\n", 2);
 		exit(1);
+	}
+}
+
+void null_obj(t_data *data)
+{
+	int i;
+
+	i = 0;
+	while (i < data->objects_cnt)
+	{
+		data->objects[i].object = NULL;
+		i++;
 	}
 }

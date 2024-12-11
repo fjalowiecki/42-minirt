@@ -187,10 +187,7 @@ void	my_mlx_pixel_put(t_img *data, int x, int y, int color);
 unsigned int rgb_to_hex(int r, int g, int b);
 
 /*obj_args.c*/
-t_color get_color(char *rgb, int *status);
-float get_float(char *str, int *status);
-t_point3 get_point(char *xyz, int *status);
-t_vec3 get_vec(char *xyz, int *status);
+
 
 /* shaded_pixel.c */
 bool shaded_pixel(int object_index, t_point3 intersection, t_point3 light, t_data *data);
@@ -234,21 +231,20 @@ int set_figures(int type, char **obj_args, t_data *data);
 int check_amount_args(char **obj_args, int i);
 int sum_one_type(int type, t_data *data, int *obj_types);
 
-int get_fov(char *str, int *status);
-t_point3 get_point(char *xyz, int *status);
+int get_fov(char *str, float *ret);
+int get_point(char *xyz, t_point3 *point);
 
-float get_float(char *str, int *status);
-t_color get_color(char *rgb, int *status);
-int get_int(char *str, int *status);
-t_vec3 get_vec(char *xyz, int *status);
+int get_float(char *str, float *ret);
+int get_color(char *rgb, t_color *color);
+int get_int(char *str, int* ret);
+int get_vec(char *xyz, t_vec3 *vector);
 int check_vec(t_vec3 vector);
 int check_int(char *str);
 int check_float(char *str);
 float ft_atof(char *str);
 int arr_size(char **arr);
 void printf_split(char **str);
-float get_brightness(char *str, int *status);
-
+int get_brightness(char *str, float *ret);
 
 
 /*helpers.c*/
@@ -264,7 +260,8 @@ void printf_sphere(t_sphere *sphere);
 void printf_vec3(t_vec3 vec);
 void printf_point3(t_point3 point);
 void printf_color(t_color color);
-void	free_split(char **str);
+int	free_split(char **str);
+void null_obj(t_data *data);
 
 
 
