@@ -175,6 +175,9 @@ float calc_light_angle_sphere(t_pixel_data *pixel_data, t_view *view, t_light *l
 /*hit_cone.c*/
 float hit_cone(t_ray *ray, void *obj);
 float calc_light_angle_cone(t_pixel_data *pixel_data, t_view *view, t_light *light, t_cone *cone);
+float	check_base_intersection(t_ray *ray, t_cone *cone);
+float	check_side_intersection(t_ray *ray, t_cone *cone, float *abc,
+	float discriminant);
 
 /*free_resources.c*/
 void free_resources(t_data *data);
