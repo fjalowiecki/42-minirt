@@ -9,3 +9,8 @@ todo:
 - jak rozwiazac ....
 - przedyskutowac zwracanie w obj_arg
 - sprawdzic parser na podstawie błednych danych w kontekscie leakow
+
+błędy:
+- po usunięciu parametru cone'a nic się nie wyświetla
+- po usunięciu paramteru koloru z światła nic się nie wyświetla
+- jak usuniesz ambient ot wywala segfault

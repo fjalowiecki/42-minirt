@@ -142,8 +142,8 @@ int check_vec(t_vec3 vector)
 		return (error_return("Error\nVector has to be in range[-1,1]\n"));
 	if(vector.x < -1.0 || vector.y < -1.0 || vector.z < -1.0)
 		return (error_return("Error\nVector has to be in range[-1,1]\n"));
-	if(vec_length(vector) != 1.0)
-		return (error_return("Error\nVector has to be normalized\n"));
+	//if(vec_length(vector) != 1.0)
+	//	return (error_return("Error\nVector has to be normalized\n"));
 	return(0);
 }
 

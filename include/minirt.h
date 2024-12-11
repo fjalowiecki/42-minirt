@@ -91,7 +91,7 @@ typedef struct
 typedef struct s_sphere 
 {
 	t_point3 center;
-	double radius;
+	float radius;
 	t_color color;
 } t_sphere;
 

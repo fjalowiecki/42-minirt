@@ -161,7 +161,7 @@ int allocate_obj(t_data *data, int *obj_types)
 	int amb_light;
 
 	amb_light = sum_one_type(AMB_LIGHT, data, obj_types);
-	if (amb_light != 0 && amb_light != 1)
+	if (amb_light != 1)
 		return(error_return("Error\nWrong amount of ambient light spots(0-1)\n"));
 	if(sum_one_type(CAMERA, data, obj_types) != 1)
 		return(error_return("Error\nWrong amount of camera spots(0-1)\n"));
