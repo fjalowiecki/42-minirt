@@ -36,3 +36,4 @@ void	free_split(char **str)
 	free(str);
 	str = NULL;
 }
+

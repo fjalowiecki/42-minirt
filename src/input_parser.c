@@ -80,26 +80,26 @@ int get_file_content(int fd, t_data *data)
 	if (!input)
 		exit(1);
 	get_args(input, data);
-
-
+	free(input);
 }
 
 void get_args(char ** input, t_data *data)
 {
 	int *obj_types;
+
 	data->objects_cnt = 0;
 	check_chars(input, (int*)&(data->objects_cnt));
 	if (data->objects_cnt == 0)
 	{
 		ft_putstr_fd("Error\nNo objects in the file\n",2);
-		free(input);
+		free_split(input);
 		exit(1);
 	}
 	obj_types = malloc(sizeof(int) * data->objects_cnt);
 	if (!obj_types)
 	{
 		perror(NULL);
-		free(input);
+		free_split(input);
 		exit(1);
 	}
 	if (define_obj_types(input, obj_types) == -1)
@@ -110,9 +110,8 @@ void get_args(char ** input, t_data *data)
 		exit(1);
 	}
 	get_objects(input, data, obj_types);
-	
 }
-//1-A 2-C 3-L 4-sp 5-pl 6-cy 7-co
+
 int define_obj_types(char **input, int *obj_types)
 {
 	int i;
@@ -146,7 +145,7 @@ void get_objects(char **input, t_data *data, int *obj_types)
 
 	if (allocate_obj(data, obj_types) == -1)
 	{
-		free(input);
+		free_split(input);
 		free(obj_types);
 		free_resources(data);
 		exit(1);
@@ -162,6 +161,7 @@ void get_objects(char **input, t_data *data, int *obj_types)
 			exit(1);
 		}
 	}
+	free(obj_types);
 }
 
 int allocate_obj(t_data *data, int *obj_types)
