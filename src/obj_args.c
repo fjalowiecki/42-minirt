@@ -80,7 +80,10 @@ int get_color(char *rgb, t_color *color)
 	if (!rgb_splt)
 		return(error_return("Error\nWrong number of arguments for RGB\n"));
 	if (arr_size(rgb_splt)!= 3)
-		return(free_split(rgb_splt));
+	{
+		free_split(rgb_splt);
+		return(error_return("Error\nWrong amount of arguments for RGB\n"));
+	}
 	if(get_int(rgb_splt[0], &color->r) == -1)
 		return(free_split(rgb_splt));
 	if(get_int(rgb_splt[1], &color->g) == -1)
@@ -89,7 +92,10 @@ int get_color(char *rgb, t_color *color)
 		return(free_split(rgb_splt));
 	if(color->r > 255 || color->r < 0 || color->b > 255 ||
 		color->b < 0 || color->g > 255 || color->g < 0 )
+	{
+		free_split(rgb_splt);
 		return(error_return("Error\nRGB takes value in range [0-255]\n"));
+	}
 	free_split(rgb_splt);
 	return(0);
 }
@@ -184,14 +190,14 @@ int check_float(char *str)
 			continue;
 		}
 		if(!ft_isdigit(*str))
-			return(-1);
+			return(error_return("Error\nArgument should consists of digits only\n"));
 		str++;
 		i++;
 	}
 	if (com != 1 && com != 0)
-		return(-1);
+		return(error_return("Error\nMore than one dot in single parameter\n"));
 	if (i > 10 || i == 0)
-		return(-1);
+		return(error_return("Error\nToo big number for the float be significant\n"));
 	return (0);	
 }
 

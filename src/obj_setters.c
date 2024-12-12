@@ -76,6 +76,9 @@ int check_amount_args(char **obj_args, int i)
 	while (obj_args[j])
 		j++;
 	if (j != i)
+	{
+		printf("Error\nWrong amount of arguments for %s\n", obj_args[0]);
 		return (-1);
+	}
 	return (0);
 }

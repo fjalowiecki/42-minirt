@@ -9,7 +9,6 @@ void init_scene(t_data *data) //t_view *view, t_light **light, t_object **obj_ar
 {
 	data->view->image_width = IMAGE_WIDTH;
 	data->view->image_height = IMAGE_HEIGHT;
-	data->view->viewport_height = 2.0;
 	data->view->viewport_width = calculate_viewport_width(data->view->focal_length.z, data->view->fov_degrees);
 	data->view->viewport_height = data->view->viewport_width / (data->view->image_width/data->view->image_height);
 	/*t_sphere *sph1 = malloc(sizeof(t_sphere));

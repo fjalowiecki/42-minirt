@@ -219,7 +219,7 @@ int check_line(char *line)
 	while(line[i])
 	{
 		if(ft_isalpha(line[i]))
-			return(-1); 
+			return(error_return("Error\nOnly combination of digits and minus are aveliable as an argument")); 
 		i++;
 	}
 	return(0);
@@ -236,7 +236,7 @@ void check_chars(char **input, int *nr_of_obj)
 		if(input[j][i] && !ft_isalpha(input[j][i]))
 		{
 			free_split(input);
-			ft_putstr_fd("Error\nPPProgram accepts alphanumeric arguments and \".\"\",\"\"\\n\"\"space\" \"\n", 2);
+			ft_putstr_fd("Error\nProgram accepts alphanumeric arguments and \".\"\",\"\"\\n\"\"space\" \"\n", 2);
 			exit(1);
 		}
 		while(input[j][i])

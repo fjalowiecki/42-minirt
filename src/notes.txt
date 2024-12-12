@@ -1,13 +1,5 @@
 todo:
-- enum dla typow obiekotow zeby zastąpic losowe 1,2...
-- zastanowic się jak zacienienie wpływa na dany pixel
-- wektor osi nie moze byc zerowy (0,0,0)
 - wsadzic komunikat o zasadach do headera i ustawic jako jeden z błedów
-- obiekty ktore moga pojawic sie wiecej niz raz w bonusie 
-- co sie dzieje jak czegos nie ma? kiedy wyrzucic bład w count_obj_types
-- poprawic wyswietlanie cieni 
-- jak rozwiazac ....
-- przedyskutowac zwracanie w obj_arg
 - sprawdzic parser na podstawie błednych danych w kontekscie leakow
 
 błędy:

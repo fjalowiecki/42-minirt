@@ -82,7 +82,6 @@ void printf_cone(t_cone *cone)
     printf("Height: %.3f\n", cone->height);
     printf("Color: ");
     printf_color(cone->color);
-    printf("Intersection Type: %d\n", cone->inter_type);
     printf("================\n");
 }
 
