@@ -24,7 +24,7 @@
 
 # define MLX_ERR "Error\nMinilibx failed\n"
 # define MALL_ERR "Error\nMalloc failed\n"
-
+# define IMG_ERR "Error\n"
 /*KEYCODES*/
 
 # define ESC 65307
@@ -130,6 +130,8 @@ typedef struct
 	size_t diff_lights_cnt;
 	t_object *objects;
 	size_t objects_cnt;
+	t_window window;
+	t_img	 img;
 } t_data;
 
 typedef struct
@@ -141,12 +143,6 @@ typedef struct
 	t_vec3 pixel_delta_v;
 	t_vec3 pixel00_loc;
 } t_pixel_data;
-
-typedef struct
-{
-	char **input;
-	char *obj_args;
-}	t_input;
 
 typedef float	(*t_light_calc_fn)(t_pixel_data*, t_view*, t_light*, void*);
 
@@ -184,8 +180,8 @@ void free_resources(t_data *data);
 void free_alocated_obj(t_data *data, int i);
 
 /* mlx_utils.c */
-int	close_esc(int keycode, t_window *window);
-int	on_destroy(t_window *window);
+int	close_esc(int keycode, t_data *data);
+int	on_destroy(t_data *data);
 void	my_mlx_pixel_put(t_img *data, int x, int y, int color);
 unsigned int rgb_to_hex(int r, int g, int b);
 
@@ -265,6 +261,9 @@ void printf_point3(t_point3 point);
 void printf_color(t_color color);
 int	free_split(char **str);
 void null_obj(t_data *data);
+void	free_window(t_window *window, t_img *img);
+void free_all(t_data *data);
+void window_null(t_window *window, t_img *img);
 
 
 

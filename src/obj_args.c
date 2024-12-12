@@ -43,6 +43,7 @@ int get_point(char *xyz, t_point3 *point)
 		return(free_split(xyz_splt));
 	if(get_float(xyz_splt[2], &point->z) == -1)
 		return(free_split(xyz_splt));
+	free_split(xyz_splt);
 	return(0);
 }
 
@@ -89,6 +90,7 @@ int get_color(char *rgb, t_color *color)
 	if(color->r > 255 || color->r < 0 || color->b > 255 ||
 		color->b < 0 || color->g > 255 || color->g < 0 )
 		return(error_return("Error\nRGB takes value in range [0-255]\n"));
+	free_split(rgb_splt);
 	return(0);
 }
 int get_int(char *str, int* ret)

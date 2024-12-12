@@ -42,4 +42,28 @@ int	free_split(char **str)
 	free(str);
 	return(-1);
 }
+void	free_window(t_window *window, t_img *img)
+{
+	if (img->img)
+	{
+		mlx_destroy_image(window->mlx_ptr, img->img);
+		img->img = NULL;
+	}
+	if (window->win_ptr)
+	{
+		mlx_destroy_window(window->mlx_ptr, window->win_ptr);
+		window->win_ptr = NULL;
+	}
+	if (window->mlx_ptr)
+	{
+		mlx_destroy_display(window->mlx_ptr);
+		free(window->mlx_ptr);
+		window->mlx_ptr = NULL;
+	}
+}
 
+void free_all(t_data *data)
+{
+	free_window(&data->window, &data->img);
+	free_resources(data);
+}

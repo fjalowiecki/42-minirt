@@ -1,21 +1,19 @@
 #include "minirt.h"
 
-int	close_esc (int keycode, t_window *window)
+int	close_esc (int keycode, t_data *data)
 {
 	if (keycode == ESC)
 	{
 		printf("Leaving the program...\n");
-		//todo: freeing memory
+		free_all(data);
 		exit(0);
 	}
 }
 
-int	on_destroy(t_window *window)
+int	on_destroy(t_data *data)
 {
-	mlx_destroy_window(window->mlx_ptr, window->win_ptr);
-	mlx_destroy_display(window->mlx_ptr);
-	free(window->mlx_ptr);
-	//todo: freeing memory
+	printf("Leaving the program...\n");
+	free_all(data);
 	exit(0);
 	return (0);
 }
