@@ -71,7 +71,7 @@ void	calc_closest_t_for_ray(t_data *data,
 	t_arr = malloc(sizeof(float) * data->objects_cnt);
 	if (!t_arr)
 	{
-		free_resources(data);
+		free_all(data);
 		error_exit(MALL_ERR);
 	}
 	calc_t_for_all_objects(t_arr, data->objects,

@@ -3,29 +3,29 @@
 static unsigned int	calc_color(t_data *data,
 	t_color object_color, float *angles)
 {
-	int	r;
-	int	g;
-	int	b;
-	int	i;
+	float	r;
+	float	g;
+	float	b;
+	int		i;
 
-	r = data->amb_light->brightness * data->amb_light->color.r;
-	g = data->amb_light->brightness * data->amb_light->color.g;
-	b = data->amb_light->brightness * data->amb_light->color.b;
+	r = (object_color.r / 255.0f) * data->amb_light->brightness
+		* (data->amb_light->color.r / 255.0f);
+	g = (object_color.g / 255.0f) * data->amb_light->brightness
+		* (data->amb_light->color.g / 255.0f);
+	b = (object_color.b / 255.0f) * data->amb_light->brightness
+		* (data->amb_light->color.b / 255.0f);
 	i = 0;
 	while (i < data->diff_lights_cnt)
 	{
-		r += object_color.r * angles[i] * data->diff_lights[i].brightness;
-		r += data->diff_lights[i].brightness * angles[i]
-			* data->diff_lights[i].color.r;
-		g += object_color.g * angles[i] * data->diff_lights[i].brightness;
-		g += data->diff_lights[i].brightness * angles[i]
-			* data->diff_lights[i].color.g;
-		b += object_color.b * angles[i] * data->diff_lights[i].brightness;
-		b += data->diff_lights[i].brightness * angles[i]
-			* data->diff_lights[i].color.b;
+		r += (object_color.r / 255.0f) * angles[i] * data->diff_lights[i]
+			.brightness * (data->diff_lights[i].color.r / 255.0f);
+		g += (object_color.g / 255.0f) * angles[i] * data->diff_lights[i]
+			.brightness * (data->diff_lights[i].color.g / 255.0f);
+		b += (object_color.b / 255.0f) * angles[i] * data->diff_lights[i]
+			.brightness * (data->diff_lights[i].color.b / 255.0f);
 		i++;
 	}
-	return (rgb_to_hex(r, g, b));
+	return (rgb_to_hex(r * 255, g * 255, b * 255));
 }
 
 static unsigned int	calc_color_for_object_pixel(t_data *data,
@@ -87,7 +87,7 @@ unsigned int	calc_color_for_pixel(t_data *data, t_pixel_data *pixel_data)
 	angles = malloc(sizeof(float) * data->diff_lights_cnt);
 	if (!angles)
 	{
-		free_resources(data);
+		free_all(data);
 		error_exit(MALL_ERR);
 	}
 	calc_light_angles_for_object(data, pixel_data, light_calc, angles);
