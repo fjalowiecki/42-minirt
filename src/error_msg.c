@@ -2,12 +2,14 @@
 
 int	perror_return(void)
 {
+	printf("Error\n");
 	perror(NULL);
 	return (-1);
 }
 
 void	perror_exit(void)
 {
+	printf("Error\n");
 	perror(NULL);
 	exit(1);
 }

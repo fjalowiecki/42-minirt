@@ -1,6 +1,6 @@
 #include "minirt.h"
 
-int	close_esc (int keycode, t_data *data)
+int	close_esc(int keycode, t_data *data)
 {
 	if (keycode == ESC)
 	{

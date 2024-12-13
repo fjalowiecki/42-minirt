@@ -1,5 +1,4 @@
 #include "minirt.h"
-#include <fcntl.h>
 /*
 Each type of element can be separated by one or more line break(s).
 ◦ Each type of information from an element can be separated by one or more
@@ -31,7 +30,8 @@ extension .rt
 - Light: 4"ID xyz light RGB"
 - Sphere: 4"ID xyz diameter RGB"
 - Plane: 4"ID xyz normalizednormalvector(xyz)(1-1) RGB "
-- Cylinder: 6"ID xyz 3d_normalized_vector_of_axis_of_cylinder(xyz (-1)-1) diameter height RGB"
+- Cylinder: 6"ID xyz 3d_normalized_vector_of_axis_of_cylinder(xyz (-1)-1)
+ diameter height RGB"
 - Cone: 6"ID xyz(vertex) xyz(axis_vector) angle(radians) height RGB"
 */
 //A C L sp pl cy co
@@ -48,16 +48,6 @@ void	input_parser(int argc, char **argv, t_data *data)
 	check_file(argc, argv);
 	fd = open_file(argv[1]);
 	get_file_content(fd, data);
-}
-
-int	open_file(char *file)
-{
-	int	fd;
-
-	fd = open(file, O_RDONLY);
-	if (fd < 0)
-		perror_exit();
-	return (fd);
 }
 
 int	get_file_content(int fd, t_data *data)
@@ -78,7 +68,7 @@ int	get_file_content(int fd, t_data *data)
 	return (0);
 }
 
-void	get_args(char ** input, t_data *data)
+void	get_args(char **input, t_data *data)
 {
 	int	*obj_types;
 
@@ -87,7 +77,7 @@ void	get_args(char ** input, t_data *data)
 	if (data->objects_cnt == 0)
 	{
 		free_split(input);
-		error_exit("Error\nNo objects in the file\n");
+		error_exit(NO_OBJ);
 	}
 	obj_types = malloc(sizeof(int) * data->objects_cnt);
 	if (!obj_types)
@@ -99,42 +89,15 @@ void	get_args(char ** input, t_data *data)
 	{
 		free_split(input);
 		free(obj_types);
-		error_exit("Error\nWrong object's id\n");
+		error_exit(OBJ_ID);
 	}
 	get_objects(input, data, obj_types);
 	free(obj_types);
 }
 
-int	define_obj_types(char **input, int *obj_types)
-{
-	int	i;
-
-	i = 0;
-	while (input[i])
-	{
-		if (!ft_strncmp(input[i], "A ", 2))
-			obj_types[i] = AMB_LIGHT;
-		else if (!ft_strncmp(input[i], "C ", 2) )
-			obj_types[i] = CAMERA;
-		else if (!ft_strncmp(input[i], "L ", 2) )
-			obj_types[i] = DIF_LIGHT;
-		else if (!ft_strncmp(input[i], "sp ", 3) )
-			obj_types[i] = SPHERE;
-		else if (!ft_strncmp(input[i], "pl ", 3) )
-			obj_types[i] = PLANE;
-		else if (!ft_strncmp(input[i], "cy ", 3) )
-			obj_types[i] = CYLINDER;
-		else if (!ft_strncmp(input[i], "co ", 3) )
-			obj_types[i] = CONE;
-		else
-			return (-1);
-		i++;
-	}
-	return (0);
-}
 void	get_objects(char **input, t_data *data, int *obj_types)
 {
-	int i;
+	int	i;
 
 	if (allocate_obj(data, obj_types) == -1)
 	{
@@ -163,9 +126,9 @@ int	allocate_obj(t_data *data, int *obj_types)
 
 	amb_light = sum_one_type(AMB_LIGHT, data, obj_types);
 	if (amb_light != 1)
-		return (error_return("Error\nWrong amount of ambient light spots(0-1)\n"));
+		return (error_return(SPOT_AMB));
 	if (sum_one_type(CAMERA, data, obj_types) != 1)
-		return (error_return("Error\nWrong amount of camera spots(0-1)\n"));
+		return (error_return(SPOT_CAMER));
 	lights = sum_one_type(DIF_LIGHT, data, obj_types);
 	data->objects_cnt = data->objects_cnt - 1 - amb_light - lights;
 	if (data->objects_cnt != 0)
@@ -183,109 +146,4 @@ int	allocate_obj(t_data *data, int *obj_types)
 	data->diff_lights_cnt = lights;
 	null_obj(data);
 	return (0);
-}
-
-int	set_obj(char *line, t_data *data, int type)
-{
-	char	**obj_args;
-	int		status;
-
-	status = 0;
-	if (check_line(line) == -1)
-		return (-1);
-	obj_args = ft_split(line,' ');
-	if (!obj_args)
-		perror_return();
-	if (type == AMB_LIGHT)
-		status = set_amb_light(obj_args, data);
-	else if (type == CAMERA)
-		status = set_camera(obj_args, data);
-	else if (type == DIF_LIGHT)
-		status = set_light(obj_args, data);
-	else
-		status = set_figures(type, obj_args, data);
-	free_split(obj_args);
-	if (status == -1)
-		return (-1);
-	return (0);
-}
-
-int	check_line(char *line)
-{
-	int	i;
-
-	i = 0;
-	while (line[i] && ft_isalpha(line[i]))
-		i++;
-	while (line[i])
-	{
-		if(ft_isalpha(line[i]))
-			return (error_return("Error\nOnly combination of digits and minus are aveliable as an argument")); 
-		i++;
-	}
-	return(0);
-}
-void check_chars(char **input, int *nr_of_obj)
-{
-	int	i;
-	int	j;
-
-	j = -1;
-	while (input[++j])
-	{
-		i = 0;
-		if(input[j][i] && !ft_isalpha(input[j][i]))
-		{
-			free_split(input);
-			error_exit("Error\nProgram accepts alphanumeric arguments and \".\"\",\"\"\\n\"\"space\" \"\"-\"\n");
-		}
-		while (input[j][i])
-		{
-	  		if (!ft_isalnum(input[j][i]) && !ft_strchr("., -",input[j][i]))
-			{
-				free_split(input);
-				error_exit("Error\nProgram accepts alphanumeric arguments and \".\"\",\"\"\\n\"\"space\" \"\"-\"\n");
-			}
-			i++;
-		}
-		(*nr_of_obj)++;
-	}
-}
-void	check_file(int argc, char **argv)
-{
-	int	n;
-
-	if(argc != 2)
-	{
-		ft_putstr_fd("Error\nProgram accepts only one argument which should be map.rt\n", 2);
-		exit(1);
-	}
-	n = ft_strlen(argv[1]);
-	if (n < 4)
-	{
-		ft_putstr_fd("Error\nWrong argument\n", 2);
-		exit(1);
-	}
-	if (ft_strncmp(&argv[1][n - 3], ".rt", 4) == 0 && argv[1][n - 4] == '/')
-	{
-		ft_putstr_fd("Error\nWrong argument\n", 2);
-		exit(1);
-	}
-	if (ft_strncmp(&argv[1][n - 3], ".rt", 4) != 0)
-	{
-		ft_putstr_fd("Error\nWrong file extension\n", 2);
-		exit(1);
-	}
-}
-
-void	null_obj(t_data *data)
-{
-	size_t	i;
-
-	i = 0;
-	while (i < data->objects_cnt)
-	{
-		data->objects[i].object = NULL;
-		i++;
-	}
 }

@@ -12,6 +12,8 @@
 # include "../libft/libft.h"
 # include "vec_utils.h"
 # include "../mlx/mlx.h"
+# include <fcntl.h>
+
 
 # define IMAGE_HEIGHT 768.0
 # define IMAGE_WIDTH 1024.0
@@ -24,7 +26,32 @@
 
 # define MLX_ERR "Error\nMinilibx failed\n"
 # define MALL_ERR "Error\nMalloc failed\n"
-# define IMG_ERR "Error\n"
+# define IMG_ERR "Error\nGeting adr of img didnt't work\n"
+# define CHAR_OK "Error\nProgram accepts only alphanumerics and (., -\\n)\n"
+# define ARG_DIG "Error\nOnly digits and minus sign as parameter\n"
+# define FLT_ERR "Error\nFloat argument is invalid\n"
+# define TOO_BIG "Error\nValue is too big\n"
+# define DIG_ONLY_F "Error\nFloat arg includes sign diffrent than digit\n"
+# define FLT_SIG "Error\nToo \"big\" number for the float\n"
+# define DOT_ONE "Error\nMore than one dot in single parameter\n"
+# define NO_DOT "Error\nRGB is integer value\n"
+# define N_VEC "Error\nVector has to be normalized\n"
+# define RANGE_VEC "Error\nVector has to be in range [-1,1]\n"
+# define SPOT_AMB "Error\nProgram needs one amb_light(A)\n" 
+# define SPOT_CAMER "Error\nProgram need one camera(C)\n"
+# define OBJ_ID "Error\nWrong object's id\n"
+# define NO_OBJ "Error\nNo objects in the file\n"
+# define WRG_ARGC "Error\nProgram accepts map.rt as an input\n"
+# define WRG_FILE "Error\nWrong argument as an input file\n"
+# define WRG_FILE_EXT "Error\nWrong file extension\n"
+# define RANGE_BRIGHT "Error\nBrightness has to be in range [0.0-1.0]\n"
+# define RANGE_FOV "Error\bFOV has to be in range [0-180]\n"
+# define WRG_XYZ "Error\nWrong parameters for the point\n"
+# define WRG_RGB "Error\nWrong parameters for the rgb color\n"
+# define WRG_VEC "Error\nWrong parameters for the vector\n"
+# define RANGE_RGB "Error\nRGB has to be in range [0-255]\n"
+# define WRG_AMOUNT "Error\nWrong amount of arguments for %s\n"
+
 /*KEYCODES*/
 
 # define ESC 65307
@@ -61,6 +88,19 @@ typedef struct
 	int g;
 	int b;
 } t_color;
+
+
+typedef struct
+{
+	float	a_coeff;
+	float	b_coeff;
+	float	c_coeff;
+	float	t_side;
+	float	t_bott;
+	float	t_top;
+	float	discrmnt;
+	float	t[2];
+} t_calc_cy;
 
 typedef struct 
 {
@@ -264,7 +304,8 @@ int	free_split(char **str);
 void null_obj(t_data *data);
 void	free_window(t_window *window, t_img *img);
 void free_all(t_data *data);
-float	calculate_closest_cyl_t(float t_side, float t_bott, float t_top, t_cylinder *cylinder);
+float	closest_cyl_t(float t_side, float t_bott, float t_top, t_cylinder *cylinder);
+t_vec3	cylinder_normal(t_point3 intersect_to_center, t_cylinder *cyl);
 
 
 

@@ -48,7 +48,7 @@ int	set_cylinder(int i, char **obj_args, t_data *data)
 	if (!cylinder)
 		return (perror_return());
 	data->objects[i].object = (void *)(cylinder);
-	if (get_point(obj_args[1], &cylinder->center)== -1)
+	if (get_point(obj_args[1], &cylinder->center) == -1)
 		return (-1);
 	if (get_vec(obj_args[2], &cylinder->N_axis) == -1)
 		return (-1);

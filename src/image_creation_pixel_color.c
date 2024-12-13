@@ -45,7 +45,6 @@ static unsigned int	calc_color_for_object_pixel(t_data *data,
 		color = calc_color(data, ((t_cylinder *)object)->color, angles);
 	else
 		color = calc_color(data, ((t_cone *)object)->color, angles);
-
 	return (color);
 }
 
