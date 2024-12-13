@@ -54,6 +54,7 @@ int set_cylinder (int i, char **obj_args, t_data *data)
 		return(-1);
 	if(get_float(obj_args[3], &cylinder->diameter) == -1)
 		return(-1);
+	cylinder->r = cylinder->diameter / 2.0;
 	if(get_float(obj_args[4], &cylinder->height) == -1)
 		return(-1);
 	if(get_color(obj_args[5], &cylinder->color) == -1)

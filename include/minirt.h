@@ -110,6 +110,7 @@ typedef struct
 	float height;
 	t_color color;
 	int inter_type;
+	float r;
 } t_cylinder;
 
 typedef struct s_cone
@@ -263,6 +264,7 @@ int	free_split(char **str);
 void null_obj(t_data *data);
 void	free_window(t_window *window, t_img *img);
 void free_all(t_data *data);
+float	calculate_closest_cyl_t(float t_side, float t_bott, float t_top, t_cylinder *cylinder);
 
 
 
