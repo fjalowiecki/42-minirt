@@ -14,12 +14,12 @@ void	free_resources(t_data *data)
 
 void	free_alocated_obj(t_data *data, int i)
 {
-	int counter;
+	int	counter;
 
 	counter = 0;
-	while(counter < i)
+	while (counter < i)
 	{
-		if(data->objects[counter].object)
+		if (data->objects[counter].object)
 			free(data->objects[counter].object);
 		counter++;
 	}
@@ -29,19 +29,20 @@ void	free_alocated_obj(t_data *data, int i)
 
 int	free_split(char **str)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	if (!str)
 		return (-1);
-	while(str && str[i])
+	while (str && str[i])
 	{
 		free(str[i]);
 		i++;
 	}
 	free(str);
-	return(-1);
+	return (-1);
 }
+
 void	free_window(t_window *window, t_img *img)
 {
 	if (img->img)
@@ -62,7 +63,7 @@ void	free_window(t_window *window, t_img *img)
 	}
 }
 
-void free_all(t_data *data)
+void	free_all(t_data *data)
 {
 	free_window(&data->window, &data->img);
 	free_resources(data);

@@ -105,9 +105,9 @@ typedef struct
 typedef struct
 {
 	t_point3 center;
-	t_vec3 N_axis_vec;
+	t_vec3 N_axis;
 	float diameter;
-	float height;
+	float h;
 	t_color color;
 	int inter_type;
 	float r;

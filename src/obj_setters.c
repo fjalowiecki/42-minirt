@@ -35,23 +35,23 @@ int set_light(char **obj_args, t_data *data)
 	static int i;
 	t_light light;
 
-	if(check_amount_args(obj_args, 4) == -1)
-		return(-1);
-	if(get_point(obj_args[1], &light.origin) == -1)
-		return(-1);
-	if(get_brightness(obj_args[2], &light.brightness) == -1)
-		return(-1);
-	if(get_color(obj_args[3], &light.color) == -1)
-		return(-1);
+	if (check_amount_args(obj_args, 4) == -1)
+		return (-1);
+	if (get_point(obj_args[1], &light.origin) == -1)
+		return (-1);
+	if (get_brightness(obj_args[2], &light.brightness) == -1)
+		return (-1);
+	if (get_color(obj_args[3], &light.color) == -1)
+		return (-1);
 	data->diff_lights[i] = light;
 	i++;
-	return(0);
+	return (0);
 }
 
-int set_figures(int type, char **obj_args, t_data *data)
+int	set_figures(int type, char **obj_args, t_data *data)
 {
-	static int i;
-	int status;
+	static int	i;
+	int			status;
 
 	if (type == SPHERE)
 		status = set_sphere(i,obj_args, data);
@@ -62,7 +62,7 @@ int set_figures(int type, char **obj_args, t_data *data)
 	if (type == CONE)
 		status = set_cone(i,obj_args, data);
 	if (status == -1)
-		return(-1);
+		return (-1);
 	(data->objects[i]).type = type;
 	i++;
 	return (0);
