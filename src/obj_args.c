@@ -49,13 +49,13 @@ int get_point(char *xyz, t_point3 *point)
 
 int get_float(char *str, float *ret)
 {
-	int i;
-	float neg;
+	int		i;
+	float	neg;
 
 	neg = 1.0;
 	i = 0;
-	if(check_float(str) == -1)
-		return(error_return("Error\nOne of arguments is invalid - float\n"));
+	if (check_float(str) == -1)
+		return (error_return("Error\nOne of arguments is invalid - float\n"));
 	if (str[i] && str[i] == '-')
 	{
 		neg = -1.0;
@@ -64,11 +64,11 @@ int get_float(char *str, float *ret)
 	while (str[i] && str[i] != '.')
 	{
 		i++;
-		if(i > 4 && str[0] == '-' || i > 5)
-			return(error_return("Error\nValue of argument is to big\n"));
+		if ((i > 4 && str[0] == '-') || i > 5)
+			return (error_return("Error\nValue of argument is to big\n"));
 	}
 	*ret = ft_atof(str) * neg;
-	return(0);
+	return (0);
 }
 
 int get_color(char *rgb, t_color *color)

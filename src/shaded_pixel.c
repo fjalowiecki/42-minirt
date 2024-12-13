@@ -1,9 +1,9 @@
 #include "minirt.h"
 
 static bool	shadow_ray_hit(t_ray *shadow_ray,
-	t_data *data, int object_index, float light_distance)
+	t_data *data, float light_distance)
 {
-	int		i;
+	size_t	i;
 	float	t;
 
 	i = 0;
@@ -25,8 +25,7 @@ static bool	shadow_ray_hit(t_ray *shadow_ray,
 	return (false);
 }
 
-bool	shaded_pixel(int object_index,
-	t_point3 intersection, t_point3 light, t_data *data)
+bool	shaded_pixel(t_point3 intersection, t_point3 light, t_data *data)
 {
 	t_ray	shadow_ray;
 	float	light_distance;
@@ -35,7 +34,7 @@ bool	shaded_pixel(int object_index,
 	shadow_ray.orig = intersection;
 	shadow_ray.dir = unit_vector(vec_sub(light, intersection));
 	light_distance = vec_length(vec_sub(light, intersection));
-	if (shadow_ray_hit(&shadow_ray, data, object_index, light_distance) == true)
+	if (shadow_ray_hit(&shadow_ray, data, light_distance) == true)
 		return (true);
 	return (false);
 }

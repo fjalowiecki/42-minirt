@@ -190,7 +190,7 @@ unsigned int rgb_to_hex(int r, int g, int b);
 
 
 /* shaded_pixel.c */
-bool shaded_pixel(int object_index, t_point3 intersection, t_point3 light, t_data *data);
+bool	shaded_pixel(t_point3 intersection, t_point3 light, t_data *data);
 
 /* error_msg.c */
 int perror_return(void);

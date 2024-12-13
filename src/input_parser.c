@@ -75,6 +75,7 @@ int	get_file_content(int fd, t_data *data)
 		perror_exit();
 	get_args(input, data);
 	free_split(input);
+	return (0);
 }
 
 void	get_args(char ** input, t_data *data)
@@ -279,7 +280,7 @@ void	check_file(int argc, char **argv)
 
 void	null_obj(t_data *data)
 {
-	int	i;
+	size_t	i;
 
 	i = 0;
 	while (i < data->objects_cnt)

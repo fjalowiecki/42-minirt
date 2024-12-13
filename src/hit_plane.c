@@ -1,18 +1,18 @@
 #include "minirt.h"
 
-float hit_plane(t_ray *ray, void *obj)
+float	hit_plane(t_ray *ray, void *obj)
 {
-	float ray_dot_N;
-	float t;
-	t_plane *plane;
+	float	ray_dot_n;
+	float	t;
+	t_plane	*plane;
 
 	plane = (t_plane *)obj;
-	ray_dot_N = dot_product(ray->dir, plane->N);
-    if (ray_dot_N == 0.0)
-        return (-1.0); // Promień jest równoległy do płaszczyzny
- 	t = dot_product(vec_sub(plane->center, ray->orig), plane->N) / ray_dot_N;
+	ray_dot_n = dot_product(ray->dir, plane->N);
+	if (ray_dot_n == 0.0)
+		return (-1.0);
+	t = dot_product(vec_sub(plane->center, ray->orig), plane->N) / ray_dot_n;
 	if (t < 0)
-        return (-1.0); 
+		return (-1.0);
 	return (t);
 }
 

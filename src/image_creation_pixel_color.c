@@ -6,7 +6,7 @@ static unsigned int	calc_color(t_data *data,
 	float	r;
 	float	g;
 	float	b;
-	int		i;
+	size_t	i;
 
 	r = (object_color.r / 255.0f) * data->amb_light->brightness
 		* (data->amb_light->color.r / 255.0f);
@@ -55,7 +55,7 @@ static void	calc_light_angles_for_object(t_data *data,
 	t_point3		intersection;
 	void			*object;
 	unsigned int	obj_type;
-	int				i;
+	size_t			i;
 
 	intersection = point_intersection(pixel_data->ray.orig,
 			pixel_data->ray.dir, pixel_data->closest_t);
@@ -64,7 +64,7 @@ static void	calc_light_angles_for_object(t_data *data,
 	i = 0;
 	while (i < data->diff_lights_cnt)
 	{
-		if (shaded_pixel(pixel_data->obj_index, intersection,
+		if (shaded_pixel(intersection,
 				data->diff_lights[i].origin, data))
 			angles[i] = 0;
 		else

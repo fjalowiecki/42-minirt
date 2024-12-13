@@ -29,7 +29,7 @@ static float	pick_closest_t_and_its_obj(float *t_arr,
 static void	calc_t_for_all_objects(float *t_arr,
 	t_object *obj_arr, size_t obj_cnt, t_ray *ray)
 {
-	int	i;
+	size_t	i;
 
 	i = 0;
 	if (obj_cnt == 0 || obj_arr == NULL)

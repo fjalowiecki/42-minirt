@@ -8,6 +8,7 @@ int	close_esc (int keycode, t_data *data)
 		free_all(data);
 		exit(0);
 	}
+	return (0);
 }
 
 int	on_destroy(t_data *data)
