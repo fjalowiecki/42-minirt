@@ -5,12 +5,10 @@ static t_vec3	calc_normal_side(t_point3 hit_point, t_cone *cone,
 {
 	t_vec3	hit_to_vertex;
 	float	height_proj;
-	float	radius_proj;
 	t_vec3	normal;
 
 	hit_to_vertex = vec_sub(hit_point, cone->vertex);
 	height_proj = dot_product(hit_to_vertex, unit_axis);
-	radius_proj = tan(cone->angle) * height_proj;
 	normal = vec_sub(hit_to_vertex, vec_mul(unit_axis, height_proj));
 	return (unit_vector(normal));
 }

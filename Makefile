@@ -7,8 +7,8 @@ OBJS	= $(patsubst src/%.c, $(OBJS_DIR)/%.o, $(SRCS))
 
 CC		= gcc
 
-#CFLAGS	= -Wall -Wextra -Werror -I include/
-CFLAGS	= -I include/ -I libft/ -g
+CFLAGS	= -Wall -Wextra -Werror -I include/
+#CFLAGS	= -I include/ -I libft/ -g
 LDFLAGS = -Lmlx -lmlx -L/usr/lib/X11 -lXext -lX11 -lm -Llibft -lft
 
 $(OBJS_DIR)/%.o: src/%.c
