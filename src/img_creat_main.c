@@ -1,14 +1,42 @@
 #include "minirt.h"
 
-static void	set_viewport_pixel_parameters(t_view *view,
+static void	calc_viewport_vectors(t_view *view,
+	t_vec3	*viewport_u, t_vec3	*viewport_v)
+{
+	t_vec3	up;
+	t_vec3	right;
+	t_vec3	true_up;
+
+	if (fabs(view->focal_length.x) < 0.0001f
+		&& fabs(view->focal_length.z) < 0.0001f)
+		up = (t_vec3){0, 0, -1};
+	else
+		up = (t_vec3){0, 1, 0};
+
+	right = cross_product(up, view->focal_length);
+	right = unit_vector(right);
+	*viewport_u = vec_mul(right, view->viewport_width);
+
+	true_up = cross_product(view->focal_length, right);
+	true_up = unit_vector(true_up);
+	*viewport_v = vec_mul(true_up, -view->viewport_height);
+}
+
+static void	set_viewport_parameters(t_view *view,
 	t_pixel_data *pixel_data)
 {
 	t_vec3	viewport_u;
 	t_vec3	viewport_v;
 	t_vec3	viewport_upper_left;
+	float	fov_radians;
 
-	viewport_u = (t_vec3){view->viewport_width, 0, 0};
-	viewport_v = (t_vec3){0, -view->viewport_height, 0};
+	fov_radians = view->fov_degrees * M_PI / 180.0;
+	view->image_width = IMAGE_WIDTH;
+	view->image_height = IMAGE_HEIGHT;
+	view->viewport_width = tan(fov_radians / 2.0);
+	view->viewport_height = view->viewport_width
+		/ (view->image_width / view->image_height);
+	calc_viewport_vectors(view, &viewport_u, &viewport_v);
 	pixel_data->pixel_delta_u = vec_mul(viewport_u, 1.0 / view->image_width);
 	pixel_data->pixel_delta_v = vec_mul(viewport_v, 1.0 / view->image_height);
 	viewport_upper_left = vec_sub(vec_sub(vec_sub(view->camera_center,
@@ -26,7 +54,7 @@ void	create_image(t_img *img, t_data *data)
 	int				x;
 	int				y;
 
-	set_viewport_pixel_parameters(data->view, &pixel_data);
+	set_viewport_parameters(data->view, &pixel_data);
 	x = 0;
 	while (x < IMAGE_WIDTH)
 	{

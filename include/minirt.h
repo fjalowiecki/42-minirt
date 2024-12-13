@@ -66,7 +66,7 @@ typedef struct
 {
 //todo: here go camera parameters from file. To add orientation vector and FOV in degrees
 	t_point3 camera_center;
-	t_point3 focal_length;
+	t_vec3 focal_length;
 	float image_width;
 	float image_height;
 	float viewport_height;
@@ -263,7 +263,6 @@ int	free_split(char **str);
 void null_obj(t_data *data);
 void	free_window(t_window *window, t_img *img);
 void free_all(t_data *data);
-void window_null(t_window *window, t_img *img);
 
 
 
