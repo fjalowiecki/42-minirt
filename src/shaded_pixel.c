@@ -39,4 +39,3 @@ bool	shaded_pixel(int object_index,
 		return (true);
 	return (false);
 }
-

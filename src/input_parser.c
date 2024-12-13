@@ -37,34 +37,34 @@ extension .rt
 //A C L sp pl cy co
 //todo:each free input change to free_split
 
-void input_parser(int argc, char **argv, t_data *data)
+void	input_parser(int argc, char **argv, t_data *data)
 {
-	int fd;
+	int	fd;
 
 	data->objects = NULL;
 	data->view = NULL;
 	data->amb_light = NULL;
 	data->diff_lights = NULL;
-	//check_file(argc, argv);
+	check_file(argc, argv);
 	fd = open_file(argv[1]);
 	get_file_content(fd, data);
-
 }
 
-int open_file(char *file)
+int	open_file(char *file)
 {
-	int fd;
+	int	fd;
+
 	fd = open(file, O_RDONLY);
 	if (fd < 0)
 		perror_exit();
-	return(fd);
+	return (fd);
 }
 
-int get_file_content(int fd, t_data *data)
+int	get_file_content(int fd, t_data *data)
 {
-	char buf[4096];
-	char **input;
-	int byt;
+	char	buf[4096];
+	char	**input;
+	int		byt;
 
 	byt = read(fd, buf, 4096);
 	if (byt <= 0)
@@ -77,9 +77,9 @@ int get_file_content(int fd, t_data *data)
 	free_split(input);
 }
 
-void get_args(char ** input, t_data *data)
+void	get_args(char ** input, t_data *data)
 {
-	int *obj_types;
+	int	*obj_types;
 
 	data->objects_cnt = 0;
 	check_chars(input, (int*)&(data->objects_cnt));
@@ -104,34 +104,34 @@ void get_args(char ** input, t_data *data)
 	free(obj_types);
 }
 
-int define_obj_types(char **input, int *obj_types)
+int	define_obj_types(char **input, int *obj_types)
 {
-	int i;
+	int	i;
 
 	i = 0;
-	while(input[i])
+	while (input[i])
 	{
-		if(!ft_strncmp(input[i], "A ", 2))
+		if (!ft_strncmp(input[i], "A ", 2))
 			obj_types[i] = AMB_LIGHT;
-		else if(!ft_strncmp(input[i], "C ", 2) )
+		else if (!ft_strncmp(input[i], "C ", 2) )
 			obj_types[i] = CAMERA;
-		else if(!ft_strncmp(input[i], "L ", 2) )
+		else if (!ft_strncmp(input[i], "L ", 2) )
 			obj_types[i] = DIF_LIGHT;
-		else if(!ft_strncmp(input[i], "sp ", 3) )
+		else if (!ft_strncmp(input[i], "sp ", 3) )
 			obj_types[i] = SPHERE;
-		else if(!ft_strncmp(input[i], "pl ", 3) )
+		else if (!ft_strncmp(input[i], "pl ", 3) )
 			obj_types[i] = PLANE;
-		else if(!ft_strncmp(input[i], "cy ", 3) )
+		else if (!ft_strncmp(input[i], "cy ", 3) )
 			obj_types[i] = CYLINDER;
-		else if(!ft_strncmp(input[i], "co ", 3) )
+		else if (!ft_strncmp(input[i], "co ", 3) )
 			obj_types[i] = CONE;
-		else 
-			return(-1);
+		else
+			return (-1);
 		i++;
 	}
 	return (0);
 }
-void get_objects(char **input, t_data *data, int *obj_types)
+void	get_objects(char **input, t_data *data, int *obj_types)
 {
 	int i;
 
@@ -143,7 +143,7 @@ void get_objects(char **input, t_data *data, int *obj_types)
 		exit(1);
 	}
 	i = -1;
-	while(input[++i])
+	while (input[++i])
 	{
 		if (set_obj(input[i], data, obj_types[i]) == -1)
 		{
@@ -155,102 +155,99 @@ void get_objects(char **input, t_data *data, int *obj_types)
 	}
 }
 
-int allocate_obj(t_data *data, int *obj_types)
+int	allocate_obj(t_data *data, int *obj_types)
 {
-	int lights;
-	int amb_light;
+	int	lights;
+	int	amb_light;
 
 	amb_light = sum_one_type(AMB_LIGHT, data, obj_types);
 	if (amb_light != 1)
-		return(error_return("Error\nWrong amount of ambient light spots(0-1)\n"));
-	if(sum_one_type(CAMERA, data, obj_types) != 1)
-		return(error_return("Error\nWrong amount of camera spots(0-1)\n"));
+		return (error_return("Error\nWrong amount of ambient light spots(0-1)\n"));
+	if (sum_one_type(CAMERA, data, obj_types) != 1)
+		return (error_return("Error\nWrong amount of camera spots(0-1)\n"));
 	lights = sum_one_type(DIF_LIGHT, data, obj_types);
 	data->objects_cnt = data->objects_cnt - 1 - amb_light - lights;
 	if (data->objects_cnt != 0)
 		data->objects = malloc(sizeof(t_object) * data->objects_cnt);
-	if(!data->objects && data->objects_cnt != 0)
+	if (!data->objects && data->objects_cnt != 0)
 		perror_return();
-	if(amb_light == 1)
+	if (amb_light == 1)
 		data->amb_light = malloc(sizeof(t_light) * 1);
-	if(!data->amb_light && amb_light == 1)
+	if (!data->amb_light && amb_light == 1)
 		perror_return();
-	if(lights != 0)
+	if (lights != 0)
 		data->diff_lights = malloc(sizeof(t_light) * lights);
-	if(!data->diff_lights && lights != 0)
+	if (!data->diff_lights && lights != 0)
 		perror_return();
 	data->diff_lights_cnt = lights;
 	null_obj(data);
-	return(0);
+	return (0);
 }
 
-int set_obj(char *line, t_data *data, int type)
+int	set_obj(char *line, t_data *data, int type)
 {
-	char **obj_args;
-	int status;
+	char	**obj_args;
+	int		status;
 
 	status = 0;
-	if(check_line(line) == -1)
+	if (check_line(line) == -1)
 		return (-1);
-	obj_args= ft_split(line,' ');
+	obj_args = ft_split(line,' ');
 	if (!obj_args)
 		perror_return();
-	if(type == AMB_LIGHT)
+	if (type == AMB_LIGHT)
 		status = set_amb_light(obj_args, data);
-	else if(type == CAMERA)
+	else if (type == CAMERA)
 		status = set_camera(obj_args, data);
-	else if(type == DIF_LIGHT)
+	else if (type == DIF_LIGHT)
 		status = set_light(obj_args, data);
 	else
 		status = set_figures(type, obj_args, data);
 	free_split(obj_args);
 	if (status == -1)
-		return(-1);
-	return(0);
+		return (-1);
+	return (0);
 }
 
-int check_line(char *line)
+int	check_line(char *line)
 {
-	int i;
+	int	i;
 
 	i = 0;
-	while(line[i] && ft_isalpha(line[i]))
+	while (line[i] && ft_isalpha(line[i]))
 		i++;
-	while(line[i])
+	while (line[i])
 	{
 		if(ft_isalpha(line[i]))
-			return(error_return("Error\nOnly combination of digits and minus are aveliable as an argument")); 
+			return (error_return("Error\nOnly combination of digits and minus are aveliable as an argument")); 
 		i++;
 	}
 	return(0);
 }
 void check_chars(char **input, int *nr_of_obj)
 {
-	int i;
-	int j;
+	int	i;
+	int	j;
 
-	j = 0;
-	while(input[j])
+	j = -1;
+	while (input[++j])
 	{
 		i = 0;
 		if(input[j][i] && !ft_isalpha(input[j][i]))
 		{
 			free_split(input);
-			ft_putstr_fd("Error\nProgram accepts alphanumeric arguments and \".\"\",\"\"\\n\"\"space\" \"\n", 2);
-			exit(1);
+			error_exit("Error\nProgram accepts alphanumeric arguments and \".\"\",\"\"\\n\"\"space\" \"\"-\"\n");
 		}
-		while(input[j][i])
+		while (input[j][i])
 		{
 	  		if (!ft_isalnum(input[j][i]) && !ft_strchr("., -",input[j][i]))
 			{
 				free_split(input);
-				ft_putstr_fd("Error\nProgram accepts alphanumeric arguments and \".\"\",\"\"\\n\"\"space\" \"\"-\"\n", 2);
-				exit(1);
+				error_exit("Error\nProgram accepts alphanumeric arguments and \".\"\",\"\"\\n\"\"space\" \"\"-\"\n");
 			}
 			i++;
 		}
 		(*nr_of_obj)++;
-		j++;
 	}
 }
 void	check_file(int argc, char **argv)
@@ -280,9 +277,9 @@ void	check_file(int argc, char **argv)
 	}
 }
 
-void null_obj(t_data *data)
+void	null_obj(t_data *data)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (i < data->objects_cnt)
