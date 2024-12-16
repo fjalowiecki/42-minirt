@@ -27,7 +27,6 @@ static void	calc_viewport_vectors(t_view *view,
 	right = cross_product(up, view->focal_length);
 	right = unit_vector(right);
 	*viewport_u = vec_mul(right, view->viewport_width);
-
 	true_up = cross_product(view->focal_length, right);
 	true_up = unit_vector(true_up);
 	*viewport_v = vec_mul(true_up, -view->viewport_height);

@@ -33,6 +33,5 @@ t_vec3	cross_product(t_vec3 a, t_vec3 b)
 	result.x = a.y * b.z - a.z * b.y;
 	result.y = a.z * b.x - a.x * b.z;
 	result.z = a.x * b.y - a.y * b.x;
-
 	return (result);
 }

@@ -93,5 +93,3 @@ int	set_figures(int type, char **obj_args, t_data *data)
 	i++;
 	return (0);
 }
-
-

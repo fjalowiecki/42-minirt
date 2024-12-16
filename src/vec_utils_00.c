@@ -44,4 +44,3 @@ t_point3	point_intersection(t_point3 c, t_vec3 p, double skalar)
 	result.z = c.z + (p.z * skalar);
 	return (result);
 }
-

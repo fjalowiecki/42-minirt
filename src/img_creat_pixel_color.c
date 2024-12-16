@@ -74,32 +74,29 @@ static double	calc_specular_angles(t_vec3 normal,
 }
 
 static void	calc_light_angles_for_object(t_data *data,
-	t_pixel_data *pixel_data, t_light_calc_fn *light_calc)
+	t_pixel_data *pd, t_light_calc_fn *light_calc)
 {
-	t_point3		intersection;
+	t_point3		intsec;
 	void			*object;
-	unsigned int	obj_type;
 	size_t			i;
 
-	intersection = point_intersection(pixel_data->ray.orig,
-			pixel_data->ray.dir, pixel_data->closest_t);
-	obj_type = data->objects[pixel_data->obj_index].type;
-	object = data->objects[pixel_data->obj_index].object;
+	intsec = point_intersection(pd->ray.orig,
+			pd->ray.dir, pd->closest_t);
+	object = data->objects[pd->obj_index].object;
 	i = 0;
 	while (i < data->diff_lights_cnt)
 	{
-		if (shaded_pixel(intersection,
-				data->diff_lights[i].origin, data))
+		if (shaded_pixel(intsec, data->diff_lights[i].origin, data))
 		{
-			pixel_data->angles_diff[i] = 0;
-			pixel_data->angles_spec[i] = 0;
+			pd->angles_diff[i] = 0;
+			pd->angles_spec[i] = 0;
 		}
 		else
 		{
-			pixel_data->angles_diff[i] = light_calc[obj_type](pixel_data,
-					data->view, &(data->diff_lights[i]), object);
-			pixel_data->angles_spec[i] = calc_specular_angles(
-					pixel_data->normal, data, i, intersection);
+			pd->angles_diff[i] = light_calc[data->objects[pd->obj_index].type](
+					pd, data->view, &(data->diff_lights[i]), object);
+			pd->angles_spec[i] = calc_specular_angles(
+					pd->normal, data, i, intsec);
 		}
 		i++;
 	}

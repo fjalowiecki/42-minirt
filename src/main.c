@@ -41,7 +41,6 @@ int	main(int argc, char **argv)
 	t_data		data;
 
 	input_parser(argc, argv, &data);
-	// printf_all(&data);
 	init_window(&data.window, &data.img, &data);
 	create_image(&data.img, &data);
 	mlx_put_image_to_window(data.window.mlx_ptr,
