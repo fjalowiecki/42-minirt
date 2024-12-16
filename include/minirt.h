@@ -199,6 +199,7 @@ void	calc_ray_params_for_pixel(t_data *data,
 void	calc_closest_t_for_ray(t_data *data,
 	t_pixel_data *pixel_data);
 unsigned int	calc_color_for_pixel(t_data *data, t_pixel_data *pixel_data);
+double	calc_spec(t_pixel_data *pd, int i, int color);
 
 /* hit_cylinder.c */
 double hit_cylinder(t_ray *ray, void *obj);

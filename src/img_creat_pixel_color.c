@@ -1,17 +1,5 @@
 #include "minirt.h"
 
-static double	calc_spec(t_pixel_data *pd, int i, int color)
-{
-	double	shininess;
-	double	spec_strength;
-	double	spec;
-
-	shininess = 32.0f;
-	spec_strength = 0.1f;
-	spec = spec_strength * pow(pd->angles_spec[i], shininess);
-	return (spec * (color / 255.0f));
-}
-
 static unsigned int	calc_color(t_data *data,
 	t_color obj_c, double *angles, t_pixel_data *pd)
 {
@@ -19,13 +7,12 @@ static unsigned int	calc_color(t_data *data,
 	double	g;
 	double	b;
 	size_t	i;
+	t_light	*a;
 
-	r = (obj_c.r / 255.0f) * data->amb_light->brightness
-		* (data->amb_light->color.r / 255.0f);
-	g = (obj_c.g / 255.0f) * data->amb_light->brightness
-		* (data->amb_light->color.g / 255.0f);
-	b = (obj_c.b / 255.0f) * data->amb_light->brightness
-		* (data->amb_light->color.b / 255.0f);
+	a = data->amb_light;
+	r = (obj_c.r / 255.0f) * a->brightness * (a->color.r / 255.0f);
+	g = (obj_c.g / 255.0f) * a->brightness * (a->color.g / 255.0f);
+	b = (obj_c.b / 255.0f) * a->brightness * (a->color.b / 255.0f);
 	i = 0;
 	while (i < data->diff_lights_cnt)
 	{
@@ -67,7 +54,7 @@ static unsigned int	calc_color_for_object_pixel(t_data *data,
 	return (color);
 }
 
-static double	calc_specular(t_vec3 normal,
+static double	calc_specular_angles(t_vec3 normal,
 	t_data *data, int i, t_point3 intersection)
 {
 	t_vec3	light_dir;
@@ -106,8 +93,8 @@ static void	calc_light_angles_for_object(t_data *data,
 			pixel_data->angles_diff[i] = 0;
 		else
 		{
-			pixel_data->angles_spec[i] = calc_specular(pixel_data->normal,
-					data, i, intersection);
+			pixel_data->angles_spec[i] = calc_specular_angles(
+					pixel_data->normal, data, i, intersection);
 			pixel_data->angles_diff[i] = light_calc[obj_type](pixel_data,
 					data->view, &(data->diff_lights[i]), object);
 		}
