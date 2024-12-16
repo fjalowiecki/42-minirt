@@ -1,6 +1,6 @@
 #include "minirt.h"
 
-int	set_sphere (int i, char **obj_args, t_data *data)
+int	set_sphere(int i, char **obj_args, t_data *data)
 {
 	t_sphere	*sphere;
 

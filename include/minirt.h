@@ -103,7 +103,6 @@ typedef struct
 
 typedef struct 
 {
-//todo: here go camera parameters from file. To add orientation vector and FOV in degrees
 	t_point3 camera_center;
 	t_vec3 focal_length;
 	double image_width;
@@ -115,7 +114,6 @@ typedef struct
 
 typedef struct 
 {
-//todo: here go light parameters from file
 	t_point3 origin;
 	double brightness;
 	t_color color;
@@ -157,7 +155,7 @@ typedef struct s_cone
 	t_point3 vertex;
 	t_color color;
 	t_vec3 axis;
-	double angle;//w radianach
+	double angle;
 	double height;
 	int inter_type;
 } t_cone;
@@ -289,20 +287,6 @@ int arr_size(char **arr);
 void printf_split(char **str);
 int get_brightness(char *str, double *ret);
 
-
-/*helpers.c*/
-
-void	printf_all(t_data *data);
-void	printf_objects(t_object *objects, size_t objects_cnt);
-void	printf_lights(t_light *amb_light, t_light *diff_lights, size_t diff_lights_cnt);
-void	printf_view(t_view *view);
-void	printf_cylinder(t_cylinder *cylinder);
-void	printf_cone(t_cone *cone);
-void	printf_plane(t_plane *plane);
-void	printf_sphere(t_sphere *sphere);
-void	printf_vec3(t_vec3 vec);
-void	printf_point3(t_point3 point);
-void	printf_color(t_color color);
 int		free_split(char **str);
 void	null_obj(t_data *data);
 void	free_window(t_window *window, t_img *img);

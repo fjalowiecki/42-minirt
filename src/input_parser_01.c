@@ -10,7 +10,7 @@ int	check_line(char *line)
 	while (line[i])
 	{
 		if (ft_isalpha(line[i]))
-			return (error_return(ARG_DIG)); 
+			return (error_return(ARG_DIG));
 		i++;
 	}
 	return (0);

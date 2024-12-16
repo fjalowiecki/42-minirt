@@ -73,7 +73,7 @@ void	get_args(char **input, t_data *data)
 	int	*obj_types;
 
 	data->objects_cnt = 0;
-	check_chars(input, (int*)&(data->objects_cnt));
+	check_chars(input, (int *) & (data->objects_cnt));
 	if (data->objects_cnt == 0)
 	{
 		free_split(input);

@@ -11,7 +11,6 @@ static float	pick_closest_t_and_its_obj(float *t_arr,
 	t_temp = T_MAX;
 	*obj_index = -1;
 	i = 0;
-
 	while (i < t_arr_size)
 	{
 		if (t_arr[i] > 0 && t_arr[i] < t_temp)

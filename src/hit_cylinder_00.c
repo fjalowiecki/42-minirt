@@ -87,7 +87,6 @@ static void	calculate_top_t(t_cylinder *cylinder,
 	}
 }
 
-
 static void	calculate_bott_t(t_cylinder *cylinder, t_ray *ray,
 	t_calc_cy *calc)
 {
