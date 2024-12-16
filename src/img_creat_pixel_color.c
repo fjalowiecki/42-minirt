@@ -18,13 +18,13 @@ static unsigned int	calc_color(t_data *data,
 	{
 		r += (obj_c.r / 255.0f) * pd->angles_diff[i] * data->diff_lights[i]
 			.brightness * (data->diff_lights[i].color.r / 255.0f)
-			+ calc_spec(pd, i, data->diff_lights[i].color.r);
+			+ calc_spec(pd->angles_spec[i], data->diff_lights[i].color.r);
 		g += (obj_c.g / 255.0f) * pd->angles_diff[i] * data->diff_lights[i]
 			.brightness * (data->diff_lights[i].color.g / 255.0f)
-			+ calc_spec(pd, i, data->diff_lights[i].color.g);
+			+ calc_spec(pd->angles_spec[i], data->diff_lights[i].color.g);
 		b += (obj_c.b / 255.0f) * pd->angles_diff[i] * data->diff_lights[i]
 			.brightness * (data->diff_lights[i].color.b / 255.0f)
-			+ calc_spec(pd, i, data->diff_lights[i].color.g);
+			+ calc_spec(pd->angles_spec[i], data->diff_lights[i].color.g);
 		i++;
 	}
 	return (rgb_to_hex(r * 255, g * 255, b * 255));
@@ -90,13 +90,16 @@ static void	calc_light_angles_for_object(t_data *data,
 	{
 		if (shaded_pixel(intersection,
 				data->diff_lights[i].origin, data))
+		{
 			pixel_data->angles_diff[i] = 0;
+			pixel_data->angles_spec[i] = 0;
+		}
 		else
 		{
-			pixel_data->angles_spec[i] = calc_specular_angles(
-					pixel_data->normal, data, i, intersection);
 			pixel_data->angles_diff[i] = light_calc[obj_type](pixel_data,
 					data->view, &(data->diff_lights[i]), object);
+			pixel_data->angles_spec[i] = calc_specular_angles(
+					pixel_data->normal, data, i, intersection);
 		}
 		i++;
 	}

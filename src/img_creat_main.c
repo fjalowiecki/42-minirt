@@ -1,14 +1,14 @@
 #include "minirt.h"
 
-double	calc_spec(t_pixel_data *pd, int i, int color)
+double	calc_spec(double angle, int color)
 {
 	double	shininess;
 	double	spec_strength;
 	double	spec;
 
 	shininess = 32.0f;
-	spec_strength = 0.1f;
-	spec = spec_strength * pow(pd->angles_spec[i], shininess);
+	spec_strength = 0.3f;
+	spec = spec_strength * pow(angle, shininess);
 	return (spec * (color / 255.0f));
 }
 
