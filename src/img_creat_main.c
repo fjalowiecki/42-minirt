@@ -1,5 +1,17 @@
 #include "minirt.h"
 
+double	calc_spec(t_pixel_data *pd, int i, int color)
+{
+	double	shininess;
+	double	spec_strength;
+	double	spec;
+
+	shininess = 32.0f;
+	spec_strength = 0.1f;
+	spec = spec_strength * pow(pd->angles_spec[i], shininess);
+	return (spec * (color / 255.0f));
+}
+
 static void	calc_viewport_vectors(t_view *view,
 	t_vec3	*viewport_u, t_vec3	*viewport_v)
 {
@@ -12,7 +24,6 @@ static void	calc_viewport_vectors(t_view *view,
 		up = (t_vec3){0, 0, -1};
 	else
 		up = (t_vec3){0, 1, 0};
-
 	right = cross_product(up, view->focal_length);
 	right = unit_vector(right);
 	*viewport_u = vec_mul(right, view->viewport_width);
@@ -28,7 +39,7 @@ static void	set_viewport_parameters(t_view *view,
 	t_vec3	viewport_u;
 	t_vec3	viewport_v;
 	t_vec3	viewport_upper_left;
-	float	fov_radians;
+	double	fov_radians;
 
 	fov_radians = view->fov_degrees * M_PI / 180.0;
 	view->image_width = IMAGE_WIDTH;
@@ -45,6 +56,8 @@ static void	set_viewport_parameters(t_view *view,
 	pixel_data->pixel00_loc = vec_add(viewport_upper_left,
 			vec_mul(vec_add(pixel_data->pixel_delta_u,
 					pixel_data->pixel_delta_v), 0.5));
+	pixel_data->angles_diff = NULL;
+	pixel_data->angles_spec = NULL;
 }
 
 void	create_image(t_img *img, t_data *data)

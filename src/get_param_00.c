@@ -1,13 +1,13 @@
 #include "minirt.h"
 
-int	get_float(char *str, float *ret)
+int	get_double(char *str, double *ret)
 {
 	int		i;
-	float	neg;
+	double	neg;
 
 	neg = 1.0;
 	i = 0;
-	if (check_float(str) == -1)
+	if (check_double(str) == -1)
 		return (error_return(FLT_ERR));
 	if (str[i] && str[i] == '-')
 	{
@@ -24,7 +24,7 @@ int	get_float(char *str, float *ret)
 	return (0);
 }
 
-int	check_float(char *str)
+int	check_double(char *str)
 {
 	int	com;
 	int	i;
@@ -53,12 +53,12 @@ int	check_float(char *str)
 	return (0);
 }
 
-float	ft_atof(char *str)
+double	ft_atof(char *str)
 {
-	float	ret;
-	float	decimal_part;
+	double	ret;
+	double	decimal_part;
 	int		i;
-	float	divisor;
+	double	divisor;
 
 	ret = 0.0;
 	decimal_part = 0.0;

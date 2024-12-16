@@ -28,10 +28,10 @@
 # define IMG_ERR "Error\nGeting adr of img didnt't work\n"
 # define CHAR_OK "Error\nProgram accepts only alphanumerics and (., -\\n)\n"
 # define ARG_DIG "Error\nOnly digits and minus sign as parameter\n"
-# define FLT_ERR "Error\nFloat argument is invalid\n"
+# define FLT_ERR "Error\ndouble argument is invalid\n"
 # define TOO_BIG "Error\nValue is too big\n"
-# define DIG_ONLY_F "Error\nFloat arg includes sign diffrent than digit\n"
-# define FLT_SIG "Error\nToo \"big\" number for the float\n"
+# define DIG_ONLY_F "Error\ndouble arg includes sign diffrent than digit\n"
+# define FLT_SIG "Error\nToo \"big\" number for the double\n"
 # define DOT_ONE "Error\nMore than one dot in single parameter\n"
 # define NO_DOT "Error\nRGB is integer value\n"
 # define N_VEC "Error\nVector has to be normalized\n"
@@ -91,14 +91,14 @@ typedef struct
 
 typedef struct
 {
-	float	a_coeff;
-	float	b_coeff;
-	float	c_coeff;
-	float	t_side;
-	float	t_bott;
-	float	t_top;
-	float	discrmnt;
-	float	t[2];
+	double	a_coeff;
+	double	b_coeff;
+	double	c_coeff;
+	double	t_side;
+	double	t_bott;
+	double	t_top;
+	double	discrmnt;
+	double	t[2];
 } t_calc_cy;
 
 typedef struct 
@@ -106,18 +106,18 @@ typedef struct
 //todo: here go camera parameters from file. To add orientation vector and FOV in degrees
 	t_point3 camera_center;
 	t_vec3 focal_length;
-	float image_width;
-	float image_height;
-	float viewport_height;
-	float viewport_width;
-	float fov_degrees;
+	double image_width;
+	double image_height;
+	double viewport_height;
+	double viewport_width;
+	double fov_degrees;
 } t_view;
 
 typedef struct 
 {
 //todo: here go light parameters from file
 	t_point3 origin;
-	float brightness;
+	double brightness;
 	t_color color;
 } t_light;
 
@@ -130,7 +130,7 @@ typedef struct
 typedef struct s_sphere 
 {
 	t_point3 center;
-	float radius;
+	double radius;
 	t_color color;
 } t_sphere;
 
@@ -145,11 +145,11 @@ typedef struct
 {
 	t_point3 center;
 	t_vec3 N_axis;
-	float diameter;
-	float h;
+	double diameter;
+	double h;
 	t_color color;
 	int inter_type;
-	float r;
+	double r;
 } t_cylinder;
 
 typedef struct s_cone
@@ -157,8 +157,8 @@ typedef struct s_cone
 	t_point3 vertex;
 	t_color color;
 	t_vec3 axis;
-	float angle;//w radianach
-	float height;
+	double angle;//w radianach
+	double height;
 	int inter_type;
 } t_cone;
 
@@ -177,14 +177,17 @@ typedef struct
 typedef struct
 {
 	t_ray ray;
-	float closest_t;
+	double closest_t;
 	int obj_index;
+	t_vec3 normal;
 	t_vec3 pixel_delta_u;
 	t_vec3 pixel_delta_v;
 	t_vec3 pixel00_loc;
+	double *angles_diff;
+	double *angles_spec;
 } t_pixel_data;
 
-typedef float	(*t_light_calc_fn)(t_pixel_data*, t_view*, t_light*, void*);
+typedef double	(*t_light_calc_fn)(t_pixel_data*, t_view*, t_light*, void*);
 
 /*FUNCTIONS*/
 
@@ -195,25 +198,26 @@ void	calc_ray_params_for_pixel(t_data *data,
 void	calc_closest_t_for_ray(t_data *data,
 	t_pixel_data *pixel_data);
 unsigned int	calc_color_for_pixel(t_data *data, t_pixel_data *pixel_data);
+double	calc_spec(t_pixel_data *pd, int i, int color);
 
 /* hit_cylinder.c */
-float hit_cylinder(t_ray *ray, void *obj);
-float calc_light_angle_cylinder(t_pixel_data *pixel_data, t_view *view, t_light *light, t_cylinder *cyl);
+double hit_cylinder(t_ray *ray, void *obj);
+double calc_light_angle_cylinder(t_pixel_data *pixel_data, t_view *view, t_light *light, t_cylinder *cyl);
 
 /* hit_plane.c */
-float hit_plane(t_ray *ray, void *obj);
-float calc_light_angle_plane(t_pixel_data *pixel_data, t_view *view, t_light *light, t_plane *plane);
+double hit_plane(t_ray *ray, void *obj);
+double calc_light_angle_plane(t_pixel_data *pixel_data, t_view *view, t_light *light, t_plane *plane);
 
 /* hit_sphere.c */
-float hit_sphere(t_ray *ray, void *obj);
-float calc_light_angle_sphere(t_pixel_data *pixel_data, t_view *view, t_light *light, t_sphere *sph);
+double hit_sphere(t_ray *ray, void *obj);
+double calc_light_angle_sphere(t_pixel_data *pixel_data, t_view *view, t_light *light, t_sphere *sph);
 
 /*hit_cone.c*/
-float hit_cone(t_ray *ray, void *obj);
-float calc_light_angle_cone(t_pixel_data *pixel_data, t_view *view, t_light *light, t_cone *cone);
-float	check_base_intersection(t_ray *ray, t_cone *cone);
-float	check_side_intersection(t_ray *ray, t_cone *cone, float *abc,
-	float discriminant);
+double hit_cone(t_ray *ray, void *obj);
+double calc_light_angle_cone(t_pixel_data *pixel_data, t_view *view, t_light *light, t_cone *cone);
+double	check_base_intersection(t_ray *ray, t_cone *cone);
+double	check_side_intersection(t_ray *ray, t_cone *cone, double *abc,
+	double discriminant);
 
 /*free_resources.c*/
 void free_resources(t_data *data);
@@ -270,20 +274,20 @@ int set_figures(int type, char **obj_args, t_data *data);
 int check_amount_args(char **obj_args, int i);
 int sum_one_type(int type, t_data *data, int *obj_types);
 
-int get_fov(char *str, float *ret);
+int get_fov(char *str, double *ret);
 int get_point(char *xyz, t_point3 *point);
 
-int get_float(char *str, float *ret);
+int get_double(char *str, double *ret);
 int get_color(char *rgb, t_color *color);
 int get_int(char *str, int* ret);
 int get_vec(char *xyz, t_vec3 *vector);
 int check_vec(t_vec3 vector);
 int check_int(char *str);
-int check_float(char *str);
-float ft_atof(char *str);
+int check_double(char *str);
+double ft_atof(char *str);
 int arr_size(char **arr);
 void printf_split(char **str);
-int get_brightness(char *str, float *ret);
+int get_brightness(char *str, double *ret);
 
 
 /*helpers.c*/
@@ -302,8 +306,8 @@ void	printf_color(t_color color);
 int		free_split(char **str);
 void	null_obj(t_data *data);
 void	free_window(t_window *window, t_img *img);
-void	free_all(t_data *data);
-float	closest_cyl_t(float t_side, float t_bott, float t_top, t_cylinder *cylinder);
+void free_all(t_data *data);
+double	closest_cyl_t(double t_side, double t_bott, double t_top, t_cylinder *cylinder);
 t_vec3	cylinder_normal(t_point3 intersect_to_center, t_cylinder *cyl);
 
 #endif

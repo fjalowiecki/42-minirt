@@ -7,10 +7,10 @@ OBJS	= $(patsubst src/%.c, $(OBJS_DIR)/%.o, $(SRCS))
 
 CC		= cc
 
-CFLAGS	= -I include/ -I libft/ -Wall -Wextra #-Werror
+CFLAGS	= -I include/ -I libft/ -g #-Wall -Wextra #-Werror
 LDFLAGS = -Lmlx -lmlx -L/usr/lib/X11 -lXext -lX11 -lm -Llibft -lft
 
-$(OBJS_DIR)/%.o: src/%.c libft mlx
+$(OBJS_DIR)/%.o: src/%.c
 	@echo "Compiling $<..."
 	@mkdir -p $(OBJS_DIR)
 	@$(CC) $(CFLAGS) -c $< -o $@
