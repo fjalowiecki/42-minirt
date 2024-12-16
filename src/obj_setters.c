@@ -29,7 +29,7 @@ int	set_amb_light(char **obj_args, t_data *data)
 {
 	if (check_amount_args(obj_args, 3) == -1)
 		return (-1);
-	if (get_double(obj_args[1], &data->amb_light->brightness) == -1)
+	if (get_brightness(obj_args[1], &data->amb_light->brightness) == -1)
 		return (-1);
 	if (get_color(obj_args[2], &data->amb_light->color) == -1)
 		return (-1);
@@ -46,13 +46,13 @@ int	set_camera(char **obj_args, t_data *data)
 	view = malloc(sizeof(t_view));
 	if (!view)
 		return (perror_return());
+	data->view = view;
 	if (get_point(obj_args[1], &(view->camera_center)) == -1)
 		return (-1);
 	if (get_vec(obj_args[2], &(view->focal_length)) == -1)
 		return (-1);
 	if (get_fov(obj_args[3], &(view->fov_degrees)) == -1)
 		return (-1);
-	data->view = view;
 	return (0);
 }
 

@@ -33,7 +33,7 @@
 # define DIG_ONLY_F "Error\ndouble arg includes sign diffrent than digit\n"
 # define FLT_SIG "Error\nToo \"big\" number for the double\n"
 # define DOT_ONE "Error\nMore than one dot in single parameter\n"
-# define NO_DOT "Error\nRGB is integer value\n"
+# define NO_DOT "Error\nRGB, FOV are positive integers value\n"
 # define N_VEC "Error\nVector has to be normalized\n"
 # define RANGE_VEC "Error\nVector has to be in range [-1,1]\n"
 # define SPOT_AMB "Error\nProgram needs one amb_light(A)\n" 
