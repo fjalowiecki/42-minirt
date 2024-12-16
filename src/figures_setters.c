@@ -78,6 +78,8 @@ int	set_cone(int i, char **obj_args, t_data *data)
 		return (-1);
 	if (get_double(obj_args[3], &cone->angle) == -1)
 		return (-1);
+	if (cone->angle < 0 || cone->angle > 1.5)
+		return (error_return(RANGE_CONE));
 	if (get_double(obj_args[4], &cone->height) == -1)
 		return (-1);
 	if (get_color(obj_args[5], &cone->color) == -1)

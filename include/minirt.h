@@ -50,6 +50,7 @@
 # define WRG_VEC "Error\nWrong parameters for the vector\n"
 # define RANGE_RGB "Error\nRGB has to be in range [0-255]\n"
 # define WRG_AMOUNT "Error\nWrong amount of arguments for %s\n"
+# define RANGE_CONE "Error\nWrong angle for cone (0-1.5)\n"
 
 /*KEYCODES*/
 
