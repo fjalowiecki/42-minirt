@@ -3,9 +3,9 @@
 static void	calculate_bott_t(t_cylinder *cylinder, t_ray *ray, t_calc_cy *calc);
 static void	calculate_top_t(t_cylinder *cylinder, t_ray *ray, t_calc_cy *calc);
 static void	calculate_side_t(t_cylinder *cylinder, t_ray *ray,
-				t_calc_cy *calc, float *t);
+				t_calc_cy *calc, double *t);
 
-float	hit_cylinder(t_ray *ray, void *obj)
+double	hit_cylinder(t_ray *ray, void *obj)
 {
 	t_cylinder	*cylinder;
 	t_calc_cy	calc;
@@ -35,10 +35,10 @@ float	hit_cylinder(t_ray *ray, void *obj)
 }
 
 static void	calculate_side_t(t_cylinder *cylinder, t_ray *ray,
-		t_calc_cy *calc, float *t)
+		t_calc_cy *calc, double *t)
 {
 	int		i;
-	float	height_proj;
+	double	height_proj;
 	t_vec3	v;
 	t_vec3	hit_point;
 
@@ -65,10 +65,10 @@ static void	calculate_side_t(t_cylinder *cylinder, t_ray *ray,
 static void	calculate_top_t(t_cylinder *cylinder,
 			t_ray *ray, t_calc_cy *calc)
 {
-	float		denom_top;
+	double		denom_top;
 	t_vec3		hit_point;
-	float		t;
-	float		dist_to_top;
+	double		t;
+	double		dist_to_top;
 	t_point3	c_top;
 
 	c_top = vec_add(cylinder->center, vec_mul(cylinder->N_axis, cylinder->h));
@@ -91,9 +91,9 @@ static void	calculate_top_t(t_cylinder *cylinder,
 static void	calculate_bott_t(t_cylinder *cylinder, t_ray *ray,
 	t_calc_cy *calc)
 {
-	float	denom_bott;
-	float	t;
-	float	dist_to_center;
+	double	denom_bott;
+	double	t;
+	double	dist_to_center;
 	t_vec3	hit_point;
 
 	denom_bott = dot_product(ray->dir, cylinder->N_axis);
@@ -135,7 +135,7 @@ Poprawka:
 
 Upewnij się, że tolerancja jest skalowalna, np.:
 
-const float EPSILON = 1e-6 * fmax(1.0, cylinder->r);
+const double EPSILON = 1e-6 * fmax(1.0, cylinder->r);
 if (fabs(denom_top) > EPSILON) { ... }
 
 3. Obliczenia promienia dla powierzchni bocznej
@@ -149,7 +149,7 @@ Poprawka:
 
 Sprawdź, czy promień zaczyna wewnątrz cylindra:
 
-float start_dist = dot_product(o_perp, o_perp) - cylinder->r * cylinder->r;
+double start_dist = dot_product(o_perp, o_perp) - cylinder->r * cylinder->r;
 if (start_dist < 0) {
     // Promień zaczyna wewnątrz cylindra, obsłuż to zgodnie z logiką swojej
 	 aplikacji

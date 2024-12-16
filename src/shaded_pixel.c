@@ -1,10 +1,10 @@
 #include "minirt.h"
 
 static bool	shadow_ray_hit(t_ray *shadow_ray,
-	t_data *data, float light_distance)
+	t_data *data, double light_distance)
 {
 	size_t	i;
-	float	t;
+	double	t;
 
 	i = 0;
 	t = -1;
@@ -28,7 +28,7 @@ static bool	shadow_ray_hit(t_ray *shadow_ray,
 bool	shaded_pixel(t_point3 intersection, t_point3 light, t_data *data)
 {
 	t_ray	shadow_ray;
-	float	light_distance;
+	double	light_distance;
 
 	intersection.z += 0.01;
 	shadow_ray.orig = intersection;

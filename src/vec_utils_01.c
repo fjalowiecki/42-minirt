@@ -1,6 +1,6 @@
 #include "minirt.h"
 
-float	vec_length(t_vec3 v)
+double	vec_length(t_vec3 v)
 {
 	return (sqrt(v.x * v.x + v.y * v.y + v.z * v.z));
 }
@@ -8,7 +8,7 @@ float	vec_length(t_vec3 v)
 t_vec3	unit_vector(t_vec3 vector)
 {
 	t_vec3	unit;
-	float	length;
+	double	length;
 
 	length = vec_length(vector);
 	if (length != 0)

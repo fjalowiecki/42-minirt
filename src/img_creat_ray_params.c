@@ -1,10 +1,10 @@
 #include "minirt.h"
 
-static float	pick_closest_t_and_its_obj(float *t_arr,
+static double	pick_closest_t_and_its_obj(double *t_arr,
 	int t_arr_size, int *obj_index)
 {
 	int		i;
-	float	t_temp;
+	double	t_temp;
 
 	if (t_arr_size == 0 || t_arr == NULL)
 		return (-1);
@@ -26,7 +26,7 @@ static float	pick_closest_t_and_its_obj(float *t_arr,
 	return (t_temp);
 }
 
-static void	calc_t_for_all_objects(float *t_arr,
+static void	calc_t_for_all_objects(double *t_arr,
 	t_object *obj_arr, size_t obj_cnt, t_ray *ray)
 {
 	size_t	i;
@@ -64,11 +64,11 @@ void	calc_ray_params_for_pixel(t_data *data,
 void	calc_closest_t_for_ray(t_data *data,
 	t_pixel_data *pixel_data)
 {
-	float		*t_arr;
+	double		*t_arr;
 
 	if (data->objects_cnt == 0)
 		pixel_data->closest_t = -1;
-	t_arr = malloc(sizeof(float) * data->objects_cnt);
+	t_arr = malloc(sizeof(double) * data->objects_cnt);
 	if (!t_arr)
 	{
 		free_all(data);

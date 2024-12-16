@@ -1,10 +1,10 @@
 #include "minirt.h"
 
-int	get_brightness(char *str, float *ret)
+int	get_brightness(char *str, double *ret)
 {
 	int	status;
 
-	status = get_float(str, ret);
+	status = get_double(str, ret);
 	if (status == -1)
 		return (status);
 	if (*ret > 1.0 || *ret < 0)
@@ -12,13 +12,13 @@ int	get_brightness(char *str, float *ret)
 	return (0);
 }
 
-int	get_fov(char *str, float *ret)
+int	get_fov(char *str, double *ret)
 {
 	int	status;
 	int	nr;
 
 	status = get_int(str, &nr);
-	*ret = (float)nr;
+	*ret = (double)nr;
 	if (status == -1)
 		return (-1);
 	if (*ret > 180 || *ret < 0)
@@ -39,11 +39,11 @@ int	get_point(char *xyz, t_point3 *point)
 		free_split(xyz_splt);
 		return (error_return(WRG_XYZ));
 	}
-	if (get_float(xyz_splt[0], &point->x) == -1)
+	if (get_double(xyz_splt[0], &point->x) == -1)
 		return (free_split(xyz_splt));
-	if (get_float(xyz_splt[1], &point->y) == -1)
+	if (get_double(xyz_splt[1], &point->y) == -1)
 		return (free_split(xyz_splt));
-	if (get_float(xyz_splt[2], &point->z) == -1)
+	if (get_double(xyz_splt[2], &point->z) == -1)
 		return (free_split(xyz_splt));
 	free_split(xyz_splt);
 	return (0);
@@ -90,11 +90,11 @@ int	get_vec(char *xyz, t_vec3 *vector)
 		free_split(xyz_splt);
 		return (error_return(WRG_VEC));
 	}
-	if (get_float(xyz_splt[0], &vector->x) == -1)
+	if (get_double(xyz_splt[0], &vector->x) == -1)
 		return (free_split(xyz_splt));
-	if (get_float(xyz_splt[1], &vector->y) == -1)
+	if (get_double(xyz_splt[1], &vector->y) == -1)
 		return (free_split(xyz_splt));
-	if (get_float(xyz_splt[2], &vector->z) == -1)
+	if (get_double(xyz_splt[2], &vector->z) == -1)
 		return (free_split(xyz_splt));
 	if (check_vec(*vector) == -1)
 		return (free_split(xyz_splt));

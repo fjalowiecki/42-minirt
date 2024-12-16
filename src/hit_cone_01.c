@@ -1,6 +1,6 @@
 #include "minirt.h"
 
-static float	calculate_t(float *abc, float discriminant, int index)
+static double	calculate_t(double *abc, double discriminant, int index)
 {
 	if (index == 0)
 		return ((-abc[1] - sqrt(discriminant)) / (2 * abc[0]));
@@ -8,11 +8,11 @@ static float	calculate_t(float *abc, float discriminant, int index)
 		return ((-abc[1] + sqrt(discriminant)) / (2 * abc[0]));
 }
 
-static int	is_valid_intersection(t_ray *ray, t_cone *cone, float t)
+static int	is_valid_intersection(t_ray *ray, t_cone *cone, double t)
 {
 	t_point3	hit_point;
 	t_vec3		hit_to_vertex;
-	float		height_proj;
+	double		height_proj;
 
 	if (t < 0)
 		return (0);
@@ -24,11 +24,11 @@ static int	is_valid_intersection(t_ray *ray, t_cone *cone, float t)
 	return (0);
 }
 
-float	check_side_intersection(t_ray *ray, t_cone *cone, float *abc,
-	float discriminant)
+double	check_side_intersection(t_ray *ray, t_cone *cone, double *abc,
+	double discriminant)
 {
-	float	t_closest;
-	float	t;
+	double	t_closest;
+	double	t;
 	int		i;
 
 	t_closest = -1;
@@ -47,12 +47,12 @@ float	check_side_intersection(t_ray *ray, t_cone *cone, float *abc,
 	return (t_closest);
 }
 
-float	check_base_intersection(t_ray *ray, t_cone *cone)
+double	check_base_intersection(t_ray *ray, t_cone *cone)
 {
-	float		t;
+	double		t;
 	t_vec3		base_center;
-	float		radius_base;
-	float		denom_base;
+	double		radius_base;
+	double		denom_base;
 	t_point3	hit_point;
 
 	base_center = vec_add(cone->vertex, vec_mul(cone->axis, cone->height));

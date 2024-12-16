@@ -1,6 +1,6 @@
 #include "minirt.h"
 
-static void	calc_discriminant_components(float *abc, t_cone *cone, t_ray *ray)
+static void	calc_discriminant_components(double *abc, t_cone *cone, t_ray *ray)
 {
 	t_vec3	axis;
 	t_vec3	d_parallel;
@@ -24,12 +24,12 @@ static void	calc_discriminant_components(float *abc, t_cone *cone, t_ray *ray)
 			* tan(cone->angle)) * dot_product(v_parallel, v_parallel);
 }
 
-static float	calc_discriminant(t_cone *cone, t_ray *ray, float *abc)
+static double	calc_discriminant(t_cone *cone, t_ray *ray, double *abc)
 {
-	float	discriminant;
-	float	a;
-	float	b;
-	float	c;
+	double	discriminant;
+	double	a;
+	double	b;
+	double	c;
 
 	calc_discriminant_components(abc, cone, ray);
 	a = abc[0];
@@ -42,13 +42,13 @@ static float	calc_discriminant(t_cone *cone, t_ray *ray, float *abc)
 		return (discriminant);
 }
 
-float	hit_cone(t_ray *ray, void *obj)
+double	hit_cone(t_ray *ray, void *obj)
 {
 	t_cone	*cone;
-	float	discriminant;
-	float	abc[3];
-	float	t_closest;
-	float	t_base;
+	double	discriminant;
+	double	abc[3];
+	double	t_closest;
+	double	t_base;
 
 	cone = (t_cone *)obj;
 	cone->axis = unit_vector(cone->axis);

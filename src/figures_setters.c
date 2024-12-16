@@ -12,7 +12,7 @@ int	set_sphere (int i, char **obj_args, t_data *data)
 	data->objects[i].object = (void *)(sphere);
 	if (get_point(obj_args[1], &sphere->center) == -1)
 		return (-1);
-	if (get_float(obj_args[2], &sphere->radius) == -1)
+	if (get_double(obj_args[2], &sphere->radius) == -1)
 		return (-1);
 	if (get_color(obj_args[3], &sphere->color) == -1)
 		return (-1);
@@ -52,10 +52,10 @@ int	set_cylinder(int i, char **obj_args, t_data *data)
 		return (-1);
 	if (get_vec(obj_args[2], &cylinder->N_axis) == -1)
 		return (-1);
-	if (get_float(obj_args[3], &cylinder->diameter) == -1)
+	if (get_double(obj_args[3], &cylinder->diameter) == -1)
 		return (-1);
 	cylinder->r = cylinder->diameter / 2.0;
-	if (get_float(obj_args[4], &cylinder->h) == -1)
+	if (get_double(obj_args[4], &cylinder->h) == -1)
 		return (-1);
 	if (get_color(obj_args[5], &cylinder->color) == -1)
 		return (-1);
@@ -76,9 +76,9 @@ int	set_cone(int i, char **obj_args, t_data *data)
 		return (-1);
 	if (get_vec(obj_args[2], &cone->axis) == -1)
 		return (-1);
-	if (get_float(obj_args[3], &cone->angle) == -1)
+	if (get_double(obj_args[3], &cone->angle) == -1)
 		return (-1);
-	if (get_float(obj_args[4], &cone->height) == -1)
+	if (get_double(obj_args[4], &cone->height) == -1)
 		return (-1);
 	if (get_color(obj_args[5], &cone->color) == -1)
 		return (-1);
