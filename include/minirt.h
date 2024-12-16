@@ -7,13 +7,12 @@
 # include <X11/keysym.h>
 # include <math.h>
 # include <stdbool.h>
-# include <float.h>
+//# include <float.h>
 # include <unistd.h>
 # include "../libft/libft.h"
 # include "vec_utils.h"
 # include "../mlx/mlx.h"
 # include <fcntl.h>
-
 
 # define IMAGE_HEIGHT 768.0
 # define IMAGE_WIDTH 1024.0
@@ -45,7 +44,7 @@
 # define WRG_FILE "Error\nWrong argument as an input file\n"
 # define WRG_FILE_EXT "Error\nWrong file extension\n"
 # define RANGE_BRIGHT "Error\nBrightness has to be in range [0.0-1.0]\n"
-# define RANGE_FOV "Error\bFOV has to be in range [0-180]\n"
+# define RANGE_FOV "Error\nFOV has to be in range [0-180]\n"
 # define WRG_XYZ "Error\nWrong parameters for the point\n"
 # define WRG_RGB "Error\nWrong parameters for the rgb color\n"
 # define WRG_VEC "Error\nWrong parameters for the vector\n"
@@ -289,24 +288,22 @@ int get_brightness(char *str, float *ret);
 
 /*helpers.c*/
 
-void printf_all(t_data *data);
-void printf_objects(t_object *objects, size_t objects_cnt);
-void printf_lights(t_light *amb_light, t_light *diff_lights, size_t diff_lights_cnt);
-void printf_view(t_view *view);
-void printf_cylinder(t_cylinder *cylinder);
-void printf_cone(t_cone *cone);
-void printf_plane(t_plane *plane);
-void printf_sphere(t_sphere *sphere);
-void printf_vec3(t_vec3 vec);
-void printf_point3(t_point3 point);
-void printf_color(t_color color);
-int	free_split(char **str);
-void null_obj(t_data *data);
+void	printf_all(t_data *data);
+void	printf_objects(t_object *objects, size_t objects_cnt);
+void	printf_lights(t_light *amb_light, t_light *diff_lights, size_t diff_lights_cnt);
+void	printf_view(t_view *view);
+void	printf_cylinder(t_cylinder *cylinder);
+void	printf_cone(t_cone *cone);
+void	printf_plane(t_plane *plane);
+void	printf_sphere(t_sphere *sphere);
+void	printf_vec3(t_vec3 vec);
+void	printf_point3(t_point3 point);
+void	printf_color(t_color color);
+int		free_split(char **str);
+void	null_obj(t_data *data);
 void	free_window(t_window *window, t_img *img);
-void free_all(t_data *data);
+void	free_all(t_data *data);
 float	closest_cyl_t(float t_side, float t_bott, float t_top, t_cylinder *cylinder);
 t_vec3	cylinder_normal(t_point3 intersect_to_center, t_cylinder *cyl);
-
-
 
 #endif
