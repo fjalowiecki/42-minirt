@@ -47,6 +47,7 @@ double	calc_light_angle_cylinder(t_pixel_data *pixel_data,
 	t_vec3		intersec_light;
 	double		angle;
 
+	(void)view;
 	intersection = vec_add(vec_mul(pixel_data->ray.dir,
 				pixel_data->closest_t), pixel_data->ray.orig);
 	intersect_to_center = vec_sub(intersection, cyl->center);

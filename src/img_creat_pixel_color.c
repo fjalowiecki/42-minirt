@@ -1,7 +1,7 @@
 #include "minirt.h"
 
 static unsigned int	calc_color(t_data *data,
-	t_color obj_c, double *angles, t_pixel_data *pd)
+	t_color obj_c, t_pixel_data *pd)
 {
 	double	r;
 	double	g;
@@ -41,16 +41,16 @@ static unsigned int	calc_color_for_object_pixel(t_data *data,
 	object = data->objects[pixel_data->obj_index].object;
 	if (obj_type == 0)
 		color = calc_color(data, ((t_sphere *)object)->color,
-				pixel_data->angles_diff, pixel_data);
+				pixel_data);
 	else if (obj_type == 1)
 		color = calc_color(data, ((t_plane *)object)->color,
-				pixel_data->angles_diff, pixel_data);
+				pixel_data);
 	else if (obj_type == 2)
 		color = calc_color(data, ((t_cylinder *)object)->color,
-				pixel_data->angles_diff, pixel_data);
+				pixel_data);
 	else
 		color = calc_color(data, ((t_cone *)object)->color,
-				pixel_data->angles_diff, pixel_data);
+				pixel_data);
 	return (color);
 }
 

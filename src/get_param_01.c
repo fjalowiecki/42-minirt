@@ -30,6 +30,7 @@ int	check_vec(t_vec3 vector)
 		return (error_return(RANGE_VEC));
 	if (vec_length(vector) != 1)
 		return (error_return(N_VEC));
+	return (0);
 }
 
 int	check_int(char *str)

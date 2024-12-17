@@ -32,6 +32,7 @@ double	calc_light_angle_cone(t_pixel_data *pixel_data,
 	t_vec3		intersec_light;
 	double		angle;
 
+	(void)view;
 	intersection = vec_add(vec_mul(pixel_data->ray.dir,
 				pixel_data->closest_t), pixel_data->ray.orig);
 	norm_vec = cone_normal(intersection, cone);
