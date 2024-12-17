@@ -1,3 +1,4 @@
+
 #include "minirt.h"
 
 int	set_sphere(int i, char **obj_args, t_data *data)
@@ -31,7 +32,7 @@ int	set_plane(int i, char **obj_args, t_data *data)
 	data->objects[i].object = (void *)(plane);
 	if (get_point(obj_args[1], &plane->center) == -1)
 		return (-1);
-	if (get_vec(obj_args[2], &plane->N) == -1)
+	if (get_vec(obj_args[2], &plane->n) == -1)
 		return (-1);
 	if (get_color(obj_args[3], &plane->color) == -1)
 		return (-1);
@@ -50,7 +51,7 @@ int	set_cylinder(int i, char **obj_args, t_data *data)
 	data->objects[i].object = (void *)(cylinder);
 	if (get_point(obj_args[1], &cylinder->center) == -1)
 		return (-1);
-	if (get_vec(obj_args[2], &cylinder->N_axis) == -1)
+	if (get_vec(obj_args[2], &cylinder->n_axis) == -1)
 		return (-1);
 	if (get_double(obj_args[3], &cylinder->diameter) == -1)
 		return (-1);

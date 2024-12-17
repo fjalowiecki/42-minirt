@@ -18,10 +18,10 @@ double	hit_cylinder(t_ray *ray, void *obj)
 	calc.t_top = -1;
 	cylinder = (t_cylinder *)obj;
 	o = vec_sub(ray->orig, cylinder->center);
-	d_perp = vec_sub(ray->dir, vec_mul(cylinder->N_axis,
-				dot_product(ray->dir, cylinder->N_axis)));
-	o_perp = vec_sub(o, vec_mul(cylinder->N_axis,
-				dot_product(o, cylinder->N_axis)));
+	d_perp = vec_sub(ray->dir, vec_mul(cylinder->n_axis,
+				dot_product(ray->dir, cylinder->n_axis)));
+	o_perp = vec_sub(o, vec_mul(cylinder->n_axis,
+				dot_product(o, cylinder->n_axis)));
 	calc.a_coeff = dot_product(d_perp, d_perp);
 	calc.b_coeff = 2.0 * dot_product(d_perp, o_perp);
 	calc.c_coeff = dot_product(o_perp, o_perp) - cylinder->r * cylinder->r;
@@ -51,7 +51,7 @@ static void	calculate_side_t(t_cylinder *cylinder, t_ray *ray,
 			{
 				hit_point = vec_add(ray->orig, vec_mul(ray->dir, t[i]));
 				v = vec_sub(hit_point, cylinder->center);
-				height_proj = dot_product(v, cylinder->N_axis);
+				height_proj = dot_product(v, cylinder->n_axis);
 				if (height_proj >= 0 && height_proj <= cylinder->h)
 				{
 					if (calc->t_side < 0 || t[i] < calc->t_side)
@@ -71,12 +71,12 @@ static void	calculate_top_t(t_cylinder *cylinder,
 	double		dist_to_top;
 	t_point3	c_top;
 
-	c_top = vec_add(cylinder->center, vec_mul(cylinder->N_axis, cylinder->h));
-	denom_top = dot_product(ray->dir, cylinder->N_axis);
+	c_top = vec_add(cylinder->center, vec_mul(cylinder->n_axis, cylinder->h));
+	denom_top = dot_product(ray->dir, cylinder->n_axis);
 	if (fabs(denom_top) > 1e-6)
 	{
 		t = dot_product(vec_sub(c_top, ray->orig),
-				cylinder->N_axis) / denom_top;
+				cylinder->n_axis) / denom_top;
 		if (t >= 0)
 		{
 			hit_point = vec_add(ray->orig, vec_mul(ray->dir, t));
@@ -95,11 +95,11 @@ static void	calculate_bott_t(t_cylinder *cylinder, t_ray *ray,
 	double	dist_to_center;
 	t_vec3	hit_point;
 
-	denom_bott = dot_product(ray->dir, cylinder->N_axis);
+	denom_bott = dot_product(ray->dir, cylinder->n_axis);
 	if (fabs(denom_bott) > 1e-6)
 	{
 		t = dot_product(vec_sub(cylinder->center, ray->orig),
-				cylinder->N_axis) / denom_bott;
+				cylinder->n_axis) / denom_bott;
 		if (t >= 0)
 		{
 			hit_point = vec_add(ray->orig, vec_mul(ray->dir, t));
