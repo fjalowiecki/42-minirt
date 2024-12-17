@@ -7,10 +7,10 @@ double	hit_plane(t_ray *ray, void *obj)
 	t_plane	*plane;
 
 	plane = (t_plane *)obj;
-	ray_dot_n = dot_product(ray->dir, plane->N);
+	ray_dot_n = dot_product(ray->dir, plane->n);
 	if (ray_dot_n == 0.0)
 		return (-1.0);
-	t = dot_product(vec_sub(plane->center, ray->orig), plane->N) / ray_dot_n;
+	t = dot_product(vec_sub(plane->center, ray->orig), plane->n) / ray_dot_n;
 	if (t < 0)
 		return (-1.0);
 	return (t);
@@ -26,8 +26,8 @@ double	calc_light_angle_plane(t_pixel_data *pixel_data,
 	intersection = point_intersection(view->camera_center,
 			pixel_data->ray.dir, pixel_data->closest_t);
 	intersec_light = unit_vector(vec_sub(light->origin, intersection));
-	angle = dot_product(plane->N, intersec_light);
-	pixel_data->normal = plane->N;
+	angle = dot_product(plane->n, intersec_light);
+	pixel_data->normal = plane->n;
 	if (angle < 0.0)
 		angle = 0.0;
 	return (angle);

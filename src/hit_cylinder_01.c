@@ -28,7 +28,7 @@ t_vec3	cylinder_normal(t_point3 intersect_to_center, t_cylinder *cyl)
 {
 	t_vec3	unit_vec;
 
-	unit_vec = unit_vector(cyl->N_axis);
+	unit_vec = unit_vector(cyl->n_axis);
 	if (cyl->inter_type == SIDE)
 		return (unit_vector(vec_sub(intersect_to_center, vec_mul
 					(unit_vec, dot_product(intersect_to_center, unit_vec)))));
