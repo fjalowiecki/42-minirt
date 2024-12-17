@@ -28,7 +28,7 @@ int	check_vec(t_vec3 vector)
 		return (error_return(RANGE_VEC));
 	if (vector.x < -1.0 || vector.y < -1.0 || vector.z < -1.0)
 		return (error_return(RANGE_VEC));
-	if (vec_length(vector) < 0.99 || vec_length(vector) > 1.01 )
+	if (vec_length(vector) < 0.99 || vec_length(vector) > 1.01)
 		return (error_return(N_VEC));
 	return (0);
 }
