@@ -7,7 +7,7 @@ double	calc_spec(double angle, int color)
 	double	spec;
 
 	shininess = 32.0f;
-	spec_strength = 0.3f;
+	spec_strength = 0.5f;
 	spec = spec_strength * pow(angle, shininess);
 	return (spec * (color / 255.0f));
 }
